@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Script assumes all setup-image-server.sh has installed all pre-reqs
-# Script assumes /mnt/image-working is mounted and suitably large enough for image cpature (ie >100GB)
-# Script assumes /mnt/cos is mounted with COS bucket which is accessible by Image Import in destination region
-# Script assume apikey stored as ~/apikey.json
+# Script assumes setup-image-server.sh has installed all pre-reqs
+# Script assumes /mnt/image-working is mounted and suitably large enough for image capture (ie >100GB)
+# Script assumes /mnt/cos is mounted with COS bucket which is accessible by Image Import in destination region. HMAC keys stored in ~/.passwd-s3fs
+# Script assume IBM Cloud apikey stored as ~/apikey.json
 # command usage:
 # create-image.sh server-name source-region destination-region
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Script installs required prereqs onto CentOS7 instance.
 
 #install kvm image tool & s3fuse
 yum -y install epel-release
