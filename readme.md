@@ -19,11 +19,11 @@
 >     snapshot-update, snapshotu                                  [Beta] Update a snapshot  
 >     snapshots                                                   [Beta] List all snapshots  
 - **setup-image-server.sh** installs the required plugins, tools, etc and formats the work volume for a centos based server to be used for the image-conversion copy.  
-- **create-image.sh**  will create a snapshot based on server name, mount a new volume created from snapshot, create RAW image from volume and convert to and upload QCOW2 image to a COS bucket, and then import it into remote image library in different region.  
-- **get-boot-vol.sh** is a script which given a server-name and region, will return the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
-- **snapshot.sh** is a script which given a server-name and region, will create a snapshot of boot volume to be used within-region  
+- **create-image.sh**  creates a snapshot based on a server name, mounts a new volume created from the snapshot, creates RAW image from volume and convert and uploads QCOW2 image to a COS bucket, and then imports it into remote image library other region.  
+- **get-boot-vol.sh** returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
+- **snapshot.sh** creates a snapshot of boot volume to be used within-region.  
 
 ### Terraform
-- **provider.tf** configured the appropriate IBM Cloud provider variables and downloads latest provider code.  
+- **provider.tf** configures the appropriate IBM Cloud provider variables and downloads latest IBM Cloud provider plugin.  
 - **restore-from-image.tf** is an example Terraform v0.14 plan to deploy an instance from an imported image name.   Modification of variables is required to select placement of region, zone, subnet, and IP.  
 m-image.tf** is an example Terraform v0.14 plan to deploy an instance from an imported image name.   Modification of variables is required to select placement of region, zone, subnet, and IP.  .14 plan to deploy an instance from an imported image name.   Modification of variables is required to select placement of region, zone, subnet, and IP.
