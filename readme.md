@@ -6,10 +6,10 @@
 
 
 ### General Assumptions:
-￼	IBM Cloud CLI has been installed along with VPC Infrastructure plugin
-2 API key with Administrator authority downloaded and accessible at ~/apikey.json  
-3 VPC Infrastructure authorization (Reader & Writer Role) to COS instance where images will be stored  
-4 s3fsfuse installed and configured with HMAC keys with writer access to destination COS bucket stored at ~/passwd.s3fs   
+1.￼IBM Cloud CLI has been installed along with VPC Infrastructure plugin
+2. API key with Administrator authority downloaded and accessible at ~/apikey.json  
+3. VPC Infrastructure authorization (Reader & Writer Role) to COS instance where images will be stored  
+4. s3fsfuse installed and configured with HMAC keys with writer access to destination COS bucket stored at ~/passwd.s3fs   
 
 ### CLI Commands
 >     snapshot                                                    [Beta] View details of a snapshot  
