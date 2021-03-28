@@ -23,14 +23,19 @@ variable "server-name" {
   description = "Server Name to be used"
 }
 
+variable "resourcegroup_name" {
+  default = "default"
+  description = "Resource group for Server."
+}
+
 variable "ip" {
   default = "172.20.0.100"
   description = "Subnet IP address to be assigned."
 }
 
-variable "image" {
-  default = "r006-f92a353d-b89c-41f8-a6bd-baccd73577e9"
-  description = "Imported Image ID to be used for virtual instance"
+variable "image_name" {
+  default = "windows-test-202103280859"
+  description = "Imported Image Name to be used for virtual instance"
 }
 
 variable "instance_profile" {
@@ -38,12 +43,16 @@ variable "instance_profile" {
   description = "Instance profile to be used for virtual instances"
 }
 
+######################################
+# Get values from Cloud              #
+######################################
+
 data "ibm_is_ssh_key" "sshkey" {
   name = "jonhall"
 }
 
 data "ibm_resource_group" "rg" {
-  name = "default"
+  name = var.resourcegroup_name
 }
 
 data "ibm_is_vpc" "vpc" {
@@ -54,6 +63,10 @@ data "ibm_is_subnet" "subnet" {
   name = var.vpc_subnet
 }
 
+data "ibm_is_image" "image" {
+  name = var.image_name
+}
+
 ######################################
 # Restored Server                    #
 ######################################
@@ -62,7 +75,7 @@ resource "ibm_is_instance" "server" {
   vpc  = data.ibm_is_vpc.vpc.id
   zone = var.zone1
   resource_group  = data.ibm_resource_group.rg.id
-  image   = var.image
+  image   = data.ibm_is_image.image.id
   profile = var.instance_profile
 
   primary_network_interface {
