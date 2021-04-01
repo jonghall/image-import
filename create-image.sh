@@ -62,14 +62,19 @@ while true; do
             break
   fi
 done
-logger -p info -t snapshot "Attachment succesfull, $attachdevice is ready."
+logger -p info -t snapshot "Attachment complete, $attachdevice."
 
 # determine device from deviceid
-logger -p info -t snapshot "getting device from /dev/disk/by-id/virtio-${attachdevice:0:20}"
 dev=$(readlink -f /dev/disk/by-id/virtio-${attachdevice:0:20})
 logger -p info -t snapshot "Device identified as $dev."
 
-#convert dev file to qcow2
+while [ ! -e $dev ]; do
+      sleep 10
+done
+logger -p info -t snapshot "Device $dev ready to convert."
+
+
+#convert block device to qcow2 file on COS
 echo "Converting $dev to $snapshotname.qcow2."
 logger -p info -t snapshot "Converting $dev to $snapshotname.qcow2."
 qemu-img convert -p -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
