@@ -13,15 +13,6 @@ ibmcloud plugin install vpc-infrastructure
 
 # create two mnt points
 mkdir /mnt/cos
-mkdir /mnt/image-working
-
-# Partition & format working volume and then mount to /mnt/image-working  assume /dev/vdd
-
-echo -e "n\np\n1\n\n\nt\n8e\n\nw\n" | sudo fdisk /dev/vdd
-mkfs.ext4 /dev/vdd
-e2label /dev/vdd1 image-working
-echo "LABEL=image-working /mnt/image-working  ext4  defaults,nofail  0  2" >> /etc/fstab
-mount /dev/vdd /mnt/image-working
 
 # setup and mount COS using s3fuse and mount to /mnt/cos
 # replace HMAC keys for COS service with actual HMAC keys
