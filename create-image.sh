@@ -49,7 +49,7 @@ snapshotos=$(ibmcloud is snapshot $snapshotid --json | jq -r ".operating_system.
 
 # attach volume based on snapshot to local instance
 echo "Attaching snapshot $snapshotname ($snapshotid) to this instance $instanceid."
-logger -p info -t image-$servername "Attaching snapshot $snapshotname ($snapshotid) to this instance $instanceid."
+logger -p info -t image-$servername "Attaching snapshot $snapshotname to this instance. ($snapshotname $instanceid --source-snapshot $snapshotid)"
 attachmentid=$(ibmcloud is instance-volume-attachment-add $snapshotname $instanceid --source-snapshot $snapshotid --profile general-purpose --auto-delete true --output json | jq -r '.id')
 
 # Wait until attach is complete then get device
@@ -79,12 +79,7 @@ logger -p info -t image-$servername "Converting $dev to $snapshotname.qcow2."
 qemu-img convert -p -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
 logger -p info -t image-$servername "Converting $dev to $snapshotname.qcow2 complete."
 
-#detach volume and delete (volume set to autodelete)
-sleep 30
-echo "Detaching temporary volume from this server ($instanceid)."
-logger -p info -t image-$servername "Detaching temporary volume from this server ($instanceid $attachmentid)."
-ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid -f
-logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
+
 
 # Login to region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
 echo "Changing region to recovery region $recovery_region"
@@ -95,3 +90,16 @@ logger -p info -t image-$servername "Importing $snapshotname of os-type $snapsho
 ibmcloud is image-create $snapshotname --file cos://us-south/encrypted-images/$snapshotname.qcow2 -os-name $snapshotos
 echo "Image Import of Snapshot ($snapshotname) Complete."
 logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) Complete."
+
+#Cleanup etach volume and delete (volume set to autodelete on detach)
+
+echo "Detaching temporary volume from this server ($instanceid)."
+logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
+result=false
+while (! result); do
+  sleep 60
+  result=(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid -f --output json | jq -r '.[].result')
+  logger -p info -t image-$servername "Detach result = $result."
+done
+
+logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
