@@ -10,8 +10,8 @@
 
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
 export servername=$1
-export snapshot_region=$2
-export recovery_region=$3
+export snapshot_region="au-syd"
+export recovery_region="us-south"
 
 
 TIMESTAMP=`date +%Y%m%d%H%M`
@@ -30,13 +30,10 @@ echo "Creating snapshot of $servername boot volume $volumeid."
 logger -p info -t image-$servername "Creating snapshot of $servername boot volume $volumeid."
 snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
 
-# poll for snapshot completion
-echo "Waiting for snapshot of $servername boot volume $volumeid to complete..."
-logger -p info -t image-$servername "Waiting for snapshot of $servername boot volume $volumeid to complete..."
 while true; do
   sleep 60
   snapshotstate=$(ibmcloud is snapshot $snapshotid --json |  jq -r '.lifecycle_state')
-  if [ $snapshotstate == 'stable' ]; then
+  if [[ $snapshotstate == 'stable' ]]; then
             break
   fi
 done
@@ -44,11 +41,11 @@ echo "Snapshot of $servername boot volume $volumeid completed."
 logger -p info -t image-$servername "Snapshot of $servername boot volume $volumeid completed."
 
 # get running virtual servers instance id & operating system of instance
-instanceid=$(ls /var/lib/cloud/instances)
+instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 snapshotos=$(ibmcloud is snapshot $snapshotid --json | jq -r ".operating_system.name")
 
 # attach volume based on snapshot to local instance
-echo "Attaching snapshot $snapshotname ($snapshotid) to this instance $instanceid."
+echo "Attaching snapshot $snapshotname to this instance."
 logger -p info -t image-$servername "Attaching snapshot $snapshotname to this instance. ($snapshotname $instanceid --source-snapshot $snapshotid)"
 attachmentid=$(ibmcloud is instance-volume-attachment-add $snapshotname $instanceid --source-snapshot $snapshotid --profile general-purpose --auto-delete true --output json | jq -r '.id')
 
@@ -80,7 +77,6 @@ qemu-img convert -p -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
 logger -p info -t image-$servername "Converting $dev to $snapshotname.qcow2 complete."
 
 
-
 # Login to region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
 echo "Changing region to recovery region $recovery_region"
 logger -p info -t image-$servername "Changing region to recovery region $recovery_region"
@@ -93,13 +89,14 @@ logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) Co
 
 #Cleanup etach volume and delete (volume set to autodelete on detach)
 
+  #Detach volume and delete (volume set to autodelete on detach)
 echo "Detaching temporary volume from this server ($instanceid)."
 logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
-result=false
-while (! result); do
+detachresult=false
+while [ ! $detachresult ]; do
   sleep 60
-  result=(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid -f --output json | jq -r '.[].result')
-  logger -p info -t image-$servername "Detach result = $result."
+  detachresult=$(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force --output json | jq -r '.[].result')
+  logger -p info -t image-$servername "Detach result = $detachresult."
 done
-
 logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
+
