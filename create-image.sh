@@ -99,4 +99,4 @@ while [ ! $detachresult ]; do
   logger -p info -t image-$servername "Detach result = $detachresult."
 done
 logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
-
+echo "Detached temporary volume from this server ($instanceid)."
