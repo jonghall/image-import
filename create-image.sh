@@ -107,7 +107,7 @@ process() {
   detachresult=false
   while [ ! detachresult ]; do
     sleep 60
-    detachresult=i$(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force --output json | jq -r '.[].result')
+    detachresult=$(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force --output json | jq -r '.[].result')
     logger -p info -t image-conversion-$servername "Detach result = $detachresult."
   done
   logger -p info -t image-conversion-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
