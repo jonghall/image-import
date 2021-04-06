@@ -65,7 +65,7 @@ process() {
   while true; do
     sleep 30
     attachdevice=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json |  jq -r 'select(.status == "attached")' | jq -r '.device.id')
-    if [ ! -z "$attachdevice" ]; then
+    if [[ ! -z "$attachdevice" ]]; then
               break
     fi
     logger -p info -t image-conversion-$servername "Waiting for snapshot $snapshotname to attach ($attachmentid) to this instance $instanceid."
@@ -104,12 +104,13 @@ process() {
   echo "Detaching temporary volume from this server ($instanceid)."
   logger -p info -t image-conversion-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
   detachresult=false
-  while [ ! detachresult ]; do
+  while [ ! $detachresult ]; do
     sleep 60
     detachresult=$(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force --output json | jq -r '.[].result')
     logger -p info -t image-conversion-$servername "Detach result = $detachresult."
   done
   logger -p info -t image-conversion-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
+  echo "Detached temporary volume from this server ($instanceid)."
 }
 
 consume() {
