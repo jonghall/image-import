@@ -22,6 +22,14 @@ logger -p info -t image-$servername "Starting Image process for $servername."
 echo "Logging into $snapshot_region."
 logger -p info -t image-$servername "Logging into $snapshot_region."
 ibmcloud login --apikey @~/apikey.json -r $snapshot_region > /dev/null
+if [ $? -eq 0 ]; then
+  logger -p info -t image-$servername "Login Complete."
+  echo "Login Complete."
+else
+  logger -p info -t image-$servername "Login failed."
+  echo "Login failed."
+  exit 1
+fi
 
 # create snapshot
 volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
