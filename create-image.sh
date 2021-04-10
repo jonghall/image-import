@@ -80,16 +80,17 @@ if [ $? -eq 0 ]; then
 else
   logger -p info -t image-conversion-$servername "Converting $dev to $snapshotname.qcow2 failed."
   echo "Converting $dev to $snapshotname.qcow2 failed."
-  quit
+  exit 1
 fi
 
 #Detach volume and delete (volume set to autodelete on detach)
 echo "Detaching temporary volume from this server ($instanceid)."
 logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
 detachresult=false
-while [ ! $detachresult ]; do
+while ! $detachresult ; do
   sleep 60
   detachresult=$(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force --output json | jq -r '.[].result')
+  echo "Detach result = $detachresult."
   logger -p info -t image-$servername "Detach result = $detachresult."
 done
 logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
@@ -110,5 +111,5 @@ if [ $? -eq 0 ]; then
 else
   logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) failed."
   echo "Image Import of Snapshot ($snapshotname) failed."
-  quit
+  exit 1
 fi
