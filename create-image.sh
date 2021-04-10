@@ -73,23 +73,18 @@ logger -p info -t image-$servername "Block Device $dev ready to access for conve
 #convert block device to qcow2 file on COS
 echo "Converting $dev to $snapshotname.qcow2."
 logger -p info -t image-$servername "Converting $dev to $snapshotname.qcow2."
-qemu-img convert -p -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
-logger -p info -t image-$servername "Converting $dev to $snapshotname.qcow2 complete."
+qemu-img convert -c -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
 
+if [ $? -eq 0 ]; then
+  logger -p info -t image-conversion-$servername "Converting $dev to $snapshotname.qcow2 complete."
+  echo "Converting $dev to $snapshotname.qcow2 complete."
+else
+  logger -p info -t image-conversion-$servername "Converting $dev to $snapshotname.qcow2 failed."
+  echo "Converting $dev to $snapshotname.qcow2 failed."
+  quit
+fi
 
-# Login to region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
-echo "Changing region to recovery region $recovery_region"
-logger -p info -t image-$servername "Changing region to recovery region $recovery_region"
-ibmcloud target -r $recovery_region > /dev/null
-echo "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
-logger -p info -t image-$servername "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
-ibmcloud is image-create $snapshotname --file cos://us-south/encrypted-images/$snapshotname.qcow2 -os-name $snapshotos
-echo "Image Import of Snapshot ($snapshotname) Complete."
-logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) Complete."
-
-#Cleanup etach volume and delete (volume set to autodelete on detach)
-
-  #Detach volume and delete (volume set to autodelete on detach)
+#Detach volume and delete (volume set to autodelete on detach)
 echo "Detaching temporary volume from this server ($instanceid)."
 logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
 detachresult=false
@@ -100,3 +95,21 @@ while [ ! $detachresult ]; do
 done
 logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
 echo "Detached temporary volume from this server ($instanceid)."
+
+# Login to region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
+echo "Changing region to recovery region $recovery_region"
+logger -p info -t image-$servername "Changing region to recovery region $recovery_region"
+ibmcloud target -r $recovery_region > /dev/null
+
+# Import Image into Library
+echo "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
+logger -p info -t image-$servername "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
+ibmcloud is image-create $snapshotname --file cos://us-south/encrypted-images/$snapshotname.qcow2 -os-name $snapshotos
+if [ $? -eq 0 ]; then
+  logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) Complete."
+  echo "Image Import of Snapshot ($snapshotname) Complete."
+else
+  logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) failed."
+  echo "Image Import of Snapshot ($snapshotname) failed."
+  quit
+fi
