@@ -6,12 +6,12 @@
 # create-image.sh server-name
 
 # Set Variables
-
+set -e
+set -o pipefail
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
 export servername=$1
 export snapshot_region="au-syd"
 export recovery_region="us-south"
-
 
 TIMESTAMP=`date +%Y%m%d%H%M`
 snapshotname="$servername-$TIMESTAMP"
