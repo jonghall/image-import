@@ -32,10 +32,10 @@ resource "ibm_is_public_gateway" "pubgw-vpc-zone1" {
 ## Create Web and DB subnets in Zone 1 & Zone 2
 #---------------------------------------------------------
 resource "ibm_is_subnet" "subnet" {
-  name            = "${var.vpc_name}-${var.zone1}-recovery"
+  name            = "${var.vpc_name}-${var.zone1}-subnet1"
   resource_group  = data.ibm_resource_group.rg.id
   vpc             = ibm_is_vpc.vpc.id
   zone            = var.zone1
   ipv4_cidr_block = var.vpc_zone1_subnet
-  public_gateway  = ibm_is_public_gateway.pubgw-vpc-zone1.id}"
+  public_gateway  = ibm_is_public_gateway.pubgw-vpc-zone1.id
 }
