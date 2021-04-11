@@ -7,7 +7,8 @@
 # run add-server.sh to add servernames to queue.
 
 # Set Variables
-
+set -e
+set -o pipefail
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
 instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 
