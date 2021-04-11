@@ -3,13 +3,8 @@ variable "ibmcloud_region" {
   default = "us-south"
 }
 
-variable "recovery_vpc" {
-  description = "Name of VPC to recover instances to"
-  default = "recovery_vpc"
-}
-
 variable "vpc_name" {
-  default = "vpcprod"
+  default = "recovery-vpc"
   description = "Name of your VPC"
 }
 
@@ -19,13 +14,18 @@ variable "zone1" {
 }
 
 variable "vpc_subnet" {
-  default = "production-subnet01"
+  default = "us-south-1-default-subnet"
   description = "Define subnet for network connection."
 }
 
-variable "server-name" {
-  default = "restored"
-  description = "Server Name to be used"
+variable "vpc_zone1_cidr" {
+  default = "10.245.0.0/21"
+  description = "CIDR Block to assignt to zone."
+}
+
+variable "vpc_zone1_subnet" {
+  default = "10.245.0.0/24"
+  description = "Subnet for Zone1 Subnet 1"
 }
 
 variable "resourcegroup_name" {
@@ -33,14 +33,84 @@ variable "resourcegroup_name" {
   description = "Resource group for Server."
 }
 
-variable "ip" {
-  default = "172.20.0.100"
+variable "server-name1" {
+  default = "test-server01"
+  description = "Server Name to be used"
+}
+
+variable "ip1" {
+  default = "10.245.0.101"
   description = "Subnet IP address to be assigned."
 }
 
-variable "image_name" {
-  default = "windows-test-202103280859"
-  description = "Imported Image Name to be used for virtual instance"
+variable "server-name2" {
+  default = "test-server02"
+  description = "Server Name to be used"
+}
+
+variable "ip2" {
+  default = "10.245.0.102"
+  description = "Subnet IP address to be assigned."
+}
+
+variable "server-name3" {
+  default = "test-server03"
+  description = "Server Name to be used"
+}
+
+variable "ip3" {
+  default = "10.245.0.103"
+  description = "Subnet IP address to be assigned."
+}
+
+variable "server-name4" {
+  default = "test-server04"
+  description = "Server Name to be used"
+}
+
+variable "ip4" {
+  default = "10.245.0.104"
+  description = "Subnet IP address to be assigned."
+}
+
+variable "server-name5" {
+  default = "test-server05"
+  description = "Server Name to be used"
+}
+
+variable "ip5" {
+  default = "10.245.0.105"
+  description = "Subnet IP address to be assigned."
+}
+
+variable "server-name6" {
+  default = "test-server06"
+  description = "Server Name to be used"
+}
+
+variable "ip6" {
+  default = "10.245.0.106"
+  description = "Subnet IP address to be assigned."
+}
+
+variable "server-name7" {
+  default = "test-server07"
+  description = "Server Name to be used"
+}
+
+variable "ip7" {
+  default = "10.245.0.107"
+  description = "Subnet IP address to be assigned."
+}
+
+variable "server-name8" {
+  default = "test-server08"
+  description = "Server Name to be used"
+}
+
+variable "ip8" {
+  default = "10.245.0.108"
+  description = "Subnet IP address to be assigned."
 }
 
 variable "instance_profile" {

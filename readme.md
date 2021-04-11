@@ -42,6 +42,7 @@
 - **snapshot.sh** creates a snapshot of boot volume to be used within-region.  
 
 ### Terraform
-- **provider.tf** configures the appropriate IBM Cloud provider variables and downloads latest IBM Cloud provider plugin.  
-- **restore-from-image.tf** is an example Terraform v0.14 plan to deploy an instance from an imported image name (server-latest).   Modification of variables is required to select placement of region, zone, subnet, and IP.  
-m-image.tf** is an example Terraform v0.14 plan to deploy an instance from an imported image name.   Modification of variables is required to select placement of region, zone, subnet, and IP.  .14 plan to deploy an instance from an imported image name.   Modification of variables is required to select placement of region, zone, subnet, and IP.
+Terraform v0.14.10 IBM Cloud Plugin >= 1.21.   
+Plans in each directory provide a sampe of how to build and recover servers from created images.  Variables should be configured as needed.
+- **tf_create**  Terraform plan to provision 8 test servers into existing production VPC.  
+- **tf_recover**  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
