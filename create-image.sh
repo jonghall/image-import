@@ -24,6 +24,7 @@ process() {
   export servername=$1
   export snapshot_region="au-syd"
   export recovery_region="us-south"
+  export cos_import_bucket="cos://us-south/encrypted-images"
   TIMESTAMP=`date +%Y%m%d%H%M`
   snapshotname="$servername-$TIMESTAMP"
 
