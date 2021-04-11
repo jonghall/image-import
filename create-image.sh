@@ -15,7 +15,7 @@ instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 logger -p info -t image-conversion "Starting Image Conversion work queue on instance $instanceid."
 
 export USERNAME="admin"
-export REDIS_CLI="redli -u rediss://$USERNAME:$PASSWORD@25a8ac71-9f05-4ddf-9768-e5546ab67dbb.bsbaodss0vb4fikkn2bg.private.databases.appdomain.cloud:30129/0 --certfile=/root/da4adf1d-5570-4714-b526-f6d3e202e02e"
+export REDIS_CLI="redli -u rediss://$USERNAME:$REDISPW@25a8ac71-9f05-4ddf-9768-e5546ab67dbb.bsbaodss0vb4fikkn2bg.private.databases.appdomain.cloud:30129/0 --certfile=/root/da4adf1d-5570-4714-b526-f6d3e202e02e"
 q1="queue"
 POPQUEUE="${REDIS_CLI} LPOP $q1"
 nil=$(echo -n -e '\r\n')
