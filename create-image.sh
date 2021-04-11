@@ -181,4 +181,22 @@ else
 fi
 }
 
+consume() {
+    logger -p info -t image-conversion "Waiting for Image Conversion jobs."
+    while true; do
+        # move message to processing queue
+        MSG=$($POPQUEUE)
+        if [[ -z "$MSG" ]]; then
+            break
+        fi
+        # remove message from message queue
+        if [ "$MSG" != "nil" ]; then
+          logger -p info -t image-conversion "Received image-conversion request for $MSG"
+          process "$MSG"
+        fi
+        sleep 10;
+    done
+}
+
+
 consume
