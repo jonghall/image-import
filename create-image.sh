@@ -91,39 +91,7 @@ else
   exit 1
 fi
 
-# Get volume id to delete as autodelete not working
-echo "Getting attached volume id ($instanceid $attachmentid)"
-logger -p info -t image-$servername "Getting attached volume id ($instanceid $attachmentid)"
-attachvolid=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json| jq -r '.volume.id')
-echo "Attached volume id = $attachvolid."
-logger -p info -t image-$servername "Attached volume id = $attachvolid."
-
-#Detach volume and delete (volume set to autodelete on detach)
-echo "Detaching temporary volume from this server ($instanceid)."
-logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
-detachresult=false
-while ! $detachresult ; do
-  sleep 60
-  detachresult=$(ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force --output json | jq -r '.[].result')
-  echo "Detach result = $detachresult."
-  logger -p info -t image-$servername "Detach result = $detachresult."
-done
-logger -p info -t image-$servername "Detaching temporary volume from this server complete ($instanceid $attachmentid)."
-echo "Detached temporary volume from this server ($instanceid)."
-
-# Delete volume as autodelete not working
-echo "Deleting temporary volume. ($attachvolid)."
-logger -p info -t image-$servername "Deleting temporary volume. ($attachvolid)."
-ibmcloud is volume-delete $attachvolid --force
-if [ $? -eq 0 ]; then
-  logger -p info -t image-$servername "Delete of temporary volume succesful. ($attachvolid)."
-  echo "Delete of temporary volume succesful. ($attachvolid)."
-else
-  logger -p info -t image-$servername "Delete of temporary volume failed. ($attachvolid)."
-  echo "Delete of temporary volume failed. ($attachvolid)."
-fi
-
-# Login to region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
+# Target  region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
 echo "Changing region to recovery region $recovery_region"
 logger -p info -t image-$servername "Changing region to recovery region $recovery_region"
 ibmcloud target -r $recovery_region > /dev/null
@@ -136,7 +104,6 @@ else
   exit -1
 fi
 
-
 # Import Image into Library
 echo "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
 logger -p info -t image-$servername "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
@@ -147,5 +114,59 @@ if [ $? -eq 0 ]; then
 else
   logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) failed."
   echo "Image Import of Snapshot ($snapshotname) failed."
+fi
+
+# Target region where snapshot is and import cos image into library.  VPC service must have access to instance of COS.
+echo "Changing region back to snapshot region $snapshot_region to clean up."
+logger -p info -t image-$servername "Changing region to $snapshot_region to clean up."
+ibmcloud target -r $snapshot_region > /dev/null
+if [ $? -eq 0 ]; then
+  logger -p info -t image-$servername "Change to region $snapshot_region succesful."
+  echo "Change to region $recovery_region succesful."
+else
+  logger -p info -t image-$servername "Change to region $snapshot_region failed."
+  echo "Change to region $recovery_region failed."
+  exit -1
+fi
+
+# Get volume id to delete as autodelete not working
+echo "Getting attached volume id ($instanceid $attachmentid)"
+logger -p info -t image-$servername "Getting attached volume id ($instanceid $attachmentid)"
+attachvolid=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json| jq -r '.volume.id')
+echo "Attached volume id = $attachvolid."
+logger -p info -t image-$servername "Attached volume id = $attachvolid."
+
+#Detach volume and delete (volume set to autodelete on detach)
+echo "Detaching temporary volume from this server."
+logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
+ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force
+if [ $? -eq 0 ]; then
+  logger -p info -t image-$servername "Detach issued succesfully."
+  echo "Detach issued succesfully."
+else
+  logger -p info -t image-$servername "Detach failed."
+  echo "Detach failed."
   exit 1
+fi
+
+# Wait for deteach to complete and Delete volume as auto-delete not working
+while true; do
+  sleep 60
+  attached=$(ibmcloud is volume $attachvolid --json | jq -r '.volume_attachments')
+  if [ "${#attached}" -eq 2 ]; then
+            break
+  fi
+  logger -p info -t image-$servername "Waiting for volume $attachvolid to detach from this instance."
+  echo "Waiting for volume $attachvolid to detach from this instance."
+done
+
+echo "Deleting temporary volume ($attachvolid)."
+logger -p info -t image-$servername "Deleting temporary volume $attachvolid."
+ibmcloud is volume-delete $attachvolid --force
+if [ $? -eq 0 ]; then
+  logger -p info -t image-$servername "Delete of temporary volume succesful. ($attachvolid)."
+  echo "Delete of temporary volume succesful. ($attachvolid)."
+else
+  logger -p info -t image-$servername "Delete of temporary volume failed. ($attachvolid)."
+  echo "Delete of temporary volume failed. ($attachvolid)."
 fi
