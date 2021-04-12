@@ -12,7 +12,7 @@ set -o pipefail
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
 instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 
-logger -p info -t image-conversion "Starting Image Conversion work queue on instance $instanceid."
+logger -p info -t image "Starting Image Conversion work queue on instance $instanceid."
 
 export USERNAME="admin"
 export REDIS_CLI="redli -u rediss://$USERNAME:$REDISPW@25a8ac71-9f05-4ddf-9768-e5546ab67dbb.bsbaodss0vb4fikkn2bg.private.databases.appdomain.cloud:30129/0 --certfile=/root/da4adf1d-5570-4714-b526-f6d3e202e02e"
@@ -98,9 +98,9 @@ process() {
   qemu-img convert -c -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
 
   if [ $? -eq 0 ]; then
-    logger -p info -t image-conversion-$servername "Converting $dev to $snapshotname.qcow2 complete."
+    logger -p info -t image--$servername "Conversion of $dev to $snapshotname.qcow2 complete."
   else
-    logger -p info -t image-conversion-$servername "Converting $dev to $snapshotname.qcow2 failed."
+    logger -p info -t image--$servername "Conversion of $dev to $snapshotname.qcow2 failed."
     return
   fi
 
@@ -192,7 +192,7 @@ process() {
 }
 
 consume() {
-    logger -p info -t image-conversion "Waiting for Image Conversion jobs."
+    logger -p info -t image "Waiting for Image Conversion jobs."
     while true; do
         # move message to processing queue
         MSG=$($POPQUEUE)
@@ -201,12 +201,13 @@ consume() {
         fi
         # remove message from message queue
         if [ "$MSG" != "nil" ]; then
-          logger -p info -t image-conversion "Received image-conversion request for $MSG"
+          logger -p info -t image-$MSG "Received image-conversion request for $MSG"
           process "$MSG"
         fi
         sleep 10;
     done
 }
 
-
-consume
+while true; do
+  consume
+done
