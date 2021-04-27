@@ -20,16 +20,16 @@ runcmd:
  - sudo echo "/dev/mapper/vg_virt-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
  - sudo echo "encrypted-images /mnt/cos fuse.s3fs _netdev,allow_other,url=https://s3.direct.us-south.cloud-object-storage.appdomain.cloud 0 0" >> /etc/fstab
  - sudo mount -a
+ - cd /root
+ - curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+ - ibmcloud plugin install infrastructure-service -f
+ - ibmcloud plugin install cloud-databases -f
  - sudo rpm --import https://repo.logdna.com/logdna.gpg
  - sudo yum -y install logdna-agent
  - sudo logdna-agent -s LOGDNA_APIHOST=api.us-east.logging.cloud.ibm.com
  - sudo logdna-agent -s LOGDNA_LOGHOST=logs.us-east.logging.cloud.ibm.com
  - sudo chkconfig logdna-agent on
  - sudo service logdna-agent start
- - curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
- - cd /root
- - ibmcloud plugin install infrastructure-service -f
- - ibmcloud plugin install cloud-databases -f
  - wget https://github.com/IBM-Cloud/redli/releases/download/v0.5.2/redli_0.5.2_linux_amd64.tar.gz
  - tar zxvf redli_0.5.2_linux_amd64.tar.gz
  - chmod +x redli
