@@ -32,19 +32,20 @@
 6. If existing image exists in Library, renames to server-created_at_date
 7. Detach volume used for image and delete
 
-### known limitations
-- even though temporary volume is created with auto-delete=true, volumes are not automatically deleted on detach.  Script currently manually deletes all volumes.
-- script does not delete COS images
-- script does not delete old image library images
-- cos image names:  latest image for each server is always prepended with -latest, older images named with image-import date (does not match snapshot date)
-
-### Other useful utilities
-- **get-boot-vol.sh** returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
-- **snapshot.sh** creates a snapshot of boot volume to be used within-region.  
-
 ### Terraform
 Terraform v0.14.10 IBM Cloud Plugin >= 1.21.   
 Plans in each directory provide a sampe of how to build and recover servers from created images.  Variables should be configured as needed.
 - **build-image-server** Terraform plan to create conversion server(s). Change variables.tf to appropriate VPC, Subnet, and server names desired.   Currently you need to manually deploy S3 HMAC keys, IBM Cloud API key, and REDIS user/pw and certficate to each server after terraform provisions servers(s).
 - **tf_create**  Terraform plan to provision 8 test servers into existing production VPC.  
 - **tf_recover**  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
+
+### Other useful utilities
+- **get-boot-vol.sh** returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
+- **snapshot.sh** creates a snapshot of boot volume to be used within-region.  
+
+
+### known limitations
+- even though temporary volume is created with auto-delete=true, volumes are not automatically deleted on detach.  Script currently manually deletes all volumes.
+- script does not delete COS images
+- script does not delete old image library images
+- cos image names:  latest image for each server is always prepended with -latest, older images named with image-import date (does not match snapshot date)
