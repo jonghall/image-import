@@ -6,7 +6,7 @@ packages:
  - lvm2
 
 runcmd:
- - sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config"
+ - sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
  - yum -y install epel-release
  - yum -y install jq
  - yum -y install qemu-img
