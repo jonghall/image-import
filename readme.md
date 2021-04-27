@@ -23,6 +23,7 @@
 - **setup-image-server.sh** installs the required plugins, tools, etc to create a centos7 based server to be used for the image-conversion.  
 - **create-image.sh <server>** creates a snapshot based on a server name, mounts a new volume created from the snapshot,converts to QCOW2, and then imports it into remote image library in other region.  
 - **create-image-background.sh** runs in the background, using a REDIS queue, executes image-conversion jobs in the background.  Can be used to run multiple current conversion jobs, and to scale horizontally to multiple servers
+- **add-server.sh <server** add server to REDIS queue to be converted by create-image-background.sh.
 
 1. Initiate a snapshot of specified server boot volume
 2. Create volume from snapshot and attaches to image server
