@@ -42,7 +42,7 @@ resource "ibm_is_volume" "volume" {
 ######################################
 resource "ibm_is_instance" "server1" {
   count = var.server-count
-  name    = "${var.server-name1}${format("%04s",count.index+1)}"
+  name    = "${var.server-name1}${format("%02s",count.index+1)}"
   vpc  = data.ibm_is_vpc.vpc.id
   zone = var.zone1
   resource_group  = data.ibm_resource_group.rg.id
