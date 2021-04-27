@@ -11,6 +11,7 @@ runcmd:
  - yum -y install jq
  - yum -y install qemu-img
  - yum -y install s3fs-fuse
+ - yum -y install git
  - echo -e "n\np\n1\n\n\nt\n8e\n\nw\n" | sudo fdisk /dev/vdd
  - sudo pvcreate /dev/vdd1
  - sudo vgextend /dev/vg_virt /dev/vdd1
