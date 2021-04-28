@@ -31,38 +31,38 @@ process() {
   TIMESTAMP=`date +%Y%m%d%H%M`
   snapshotname="$servername-$TIMESTAMP"
 
-  logger -p info -t image-$servername "Starting Image process for $servername."
+  logger -p info -t image-process "Starting Image process for $servername."
 
   # Login and create volume from snapshot and attach to work server
-  logger -p info -t image-$servername "Logging into $snapshot_region."
+  logger -p info -t image-process "Logging into $snapshot_region."
   ibmcloud login --apikey @~/apikey.json -r $snapshot_region
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Login Complete."
+    logger -p info -t image-process "Login Complete."
   else
-    logger -p info -t image-$servername "Login failed."
+    logger -p info -t image-process "Login failed."
     return
   fi
 
   # Target region where you will take snapshot.
-  logger -p info -t image-$servername "Changing region to $snapshot_region to take snapshot."
+  logger -p info -t image-process "Changing region to $snapshot_region to take snapshot."
   ibmcloud target -r $snapshot_region > /dev/null
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Change to region $snapshot_region successful."
+    logger -p info -t image-process "Change to region $snapshot_region successful."
   else
-    logger -p info -t image-$servername "Change to region $snapshot_region failed."
+    logger -p info -t image-process "Change to region $snapshot_region failed."
     return
   fi
 
   # create snapshot
   volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
   if [ -z $volumeid ]; then
-    logger -p info -t image-$servername "Getting volumeid failed. Invalid Server or volume. Exiting."
+    logger -p info -t image-process "Getting volumeid failed. Invalid Server or volume. Exiting."
     return
   else
-    logger -p info -t image-$servername "Creating snapshot of $servername boot volume $volumeid."
+    logger -p info -t image-process "Creating snapshot of $servername boot volume $volumeid."
     snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
     if [ -z $snapshotid ]; then
-          logger -p info -t image-$servername "Snapshot failed. Exiting."
+          logger -p info -t image-process "Snapshot failed. Exiting."
           return
     fi
   fi
@@ -74,14 +74,14 @@ process() {
               break
     fi
   done
-  logger -p info -t image-$servername "Snapshot of $servername boot volume $volumeid completed."
+  logger -p info -t image-process "Snapshot of $servername boot volume $volumeid completed."
 
   # get running virtual servers instance id & operating system of instance
   instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
   snapshotos=$(ibmcloud is snapshot $snapshotid --json | jq -r ".operating_system.name")
 
   # attach volume based on snapshot to local instance
-  logger -p info -t image-$servername "Attaching snapshot $snapshotname to this instance. ($snapshotname $instanceid --source-snapshot $snapshotid)"
+  logger -p info -t image-process "Attaching snapshot $snapshotname to this instance. ($snapshotname $instanceid --source-snapshot $snapshotid)"
   attachmentid=$(ibmcloud is instance-volume-attachment-add $snapshotname $instanceid --source-snapshot $snapshotid --profile general-purpose --auto-delete true --output json | jq -r '.id')
 
   # Wait until attach is complete then get device
@@ -91,38 +91,38 @@ process() {
     if [ ! -z "$attachdevice" ]; then
               break
     fi
-    logger -p info -t image-$servername "Waiting for snapshot $snapshotname to attach ($attachmentid) to this instance $instanceid."
+    logger -p info -t image-process "Waiting for snapshot $snapshotname to attach ($attachmentid) to this instance $instanceid."
   done
-  logger -p info -t image-$servername "Attachment complete for $snapshotname ($instanceid $attachmentid), at deviceid $attachdevice."
+  logger -p info -t image-process "Attachment complete for $snapshotname ($instanceid $attachmentid), at deviceid $attachdevice."
 
   # determine device from deviceid
   sleep 30
   dev=$(readlink -f /dev/disk/by-id/virtio-${attachdevice:0:20})
-  logger -p info -t image-$servername "Local Block Device for $snapshotname identified as $dev."
+  logger -p info -t image-process "Local Block Device for $snapshotname identified as $dev."
 
   while [ ! -e $dev ]; do
         sleep 10
   done
-  logger -p info -t image-$servername "Block Device $dev ready to access for conversion."
+  logger -p info -t image-process "Block Device $dev ready to access for conversion."
 
   #convert block device to qcow2 file on COS
-  logger -p info -t image-$servername "Converting $dev to $snapshotname.qcow2."
+  logger -p info -t image-process "Converting $dev to $snapshotname.qcow2."
   qemu-img convert -c -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
 
   if [ $? -eq 0 ]; then
-    logger -p info -t image--$servername "Conversion of $dev to $snapshotname.qcow2 complete."
+    logger -p info -t image-process "Conversion of $dev to $snapshotname.qcow2 complete."
   else
-    logger -p info -t image--$servername "Conversion of $dev to $snapshotname.qcow2 failed."
+    logger -p info -t image-process "Conversion of $dev to $snapshotname.qcow2 failed."
     return
   fi
 
   # Target  region where recovery location is and import cos image into library.  VPC service must have access to instance of COS.
-  logger -p info -t image-$servername "Changing region to recovery region $recovery_region"
+  logger -p info -t image-process "Changing region to recovery region $recovery_region"
   ibmcloud target -r $recovery_region > /dev/null
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Change to region $recovery_region succesful."
+    logger -p info -t image-process "Change to region $recovery_region succesful."
   else
-    logger -p info -t image-$servername "Change to region $recovery_region failed."
+    logger -p info -t image-process "Change to region $recovery_region failed."
     return
   fi
 
@@ -135,52 +135,52 @@ process() {
   imagename="$servername-latest"
   imageid=$(echo $imagejson | jq -r --arg imagename $imagename '. | select(.name == $imagename)' | jq -r '.id')
   if [ -z "$imageid" ]; then
-    logger -p info -t image-$servername "First import of this servers snapshot."
+    logger -p info -t image-process "First import of this servers snapshot."
   else
     # rename latest image to severname-created at
-    logger -p info -t image-$servername "Image ($imageid) already exists named $imagename, renaming to image-created-date."
+    logger -p info -t image-process "Image ($imageid) already exists named $imagename, renaming to image-created-date."
     createdat=$(echo $imagejson | jq -r --arg imagename $imagename '. | select(.name == $imagename)' | jq -r '.created_at')
     newname=$servername-$(date -d $createdat +%Y%m%d%H%M)
     ibmcloud is image-update $imageid --name $newname -q
     if [ $? -eq 0 ]; then
-      logger -p info -t image-$servername "Image rename $servername-latest to $newname successfull."
+      logger -p info -t image-process "Image rename $servername-latest to $newname successfull."
     else
-      logger -p info -t image-$servername "Image rename $servername-latest to $newname failed."
+      logger -p info -t image-process "Image rename $servername-latest to $newname failed."
     fi
   fi
 
   # import snapshot as server-latest
-  logger -p info -t image-$servername "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
+  logger -p info -t image-process "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
   ibmcloud is image-create $servername-latest --file $cos_bucket/$snapshotname.qcow2 -os-name $snapshotos -q
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) complete."
+    logger -p info -t image-process "Image Import of Snapshot ($snapshotname) complete."
   else
-    logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) failed."
+    logger -p info -t image-process "Image Import of Snapshot ($snapshotname) failed."
   fi
 
   # Target region where snapshot is and import cos image into library.  VPC service must have access to instance of COS.
-  logger -p info -t image-$servername "Changing region to $snapshot_region to clean up."
+  logger -p info -t image-process "Changing region to $snapshot_region to clean up."
   ibmcloud target -r $snapshot_region > /dev/null
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Change to region $snapshot_region successful."
+    logger -p info -t image-process "Change to region $snapshot_region successful."
 
   else
-    logger -p info -t image-$servername "Change to region $snapshot_region failed."
+    logger -p info -t image-process "Change to region $snapshot_region failed."
     return
   fi
 
   # Get volume id to delete as autodelete not working
-  logger -p info -t image-$servername "Getting attached volume id ($instanceid $attachmentid)"
+  logger -p info -t image-process "Getting attached volume id ($instanceid $attachmentid)"
   attachvolid=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json| jq -r '.volume.id')
-  logger -p info -t image-$servername "Attached volume id = $attachvolid."
+  logger -p info -t image-process "Attached volume id = $attachvolid."
 
   #Detach volume and delete (volume set to autodelete on detach)
-  logger -p info -t image-$servername "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
+  logger -p info -t image-process "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
   ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid --force
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Detach issued successfully."
+    logger -p info -t image-process "Detach issued successfully."
   else
-    logger -p info -t image-$servername "Detach failed."
+    logger -p info -t image-process "Detach failed."
     return
   fi
 
@@ -191,20 +191,20 @@ process() {
     if [ "${#attached}" -eq 2 ]; then
               break
     fi
-    logger -p info -t image-$servername "Waiting for volume $attachvolid to detach from this instance."
+    logger -p info -t image-process "Waiting for volume $attachvolid to detach from this instance."
   done
 
-  logger -p info -t image-$servername "Deleting temporary volume $attachvolid."
+  logger -p info -t image-process "Deleting temporary volume $attachvolid."
   ibmcloud is volume-delete $attachvolid --force
   if [ $? -eq 0 ]; then
-    logger -p info -t image-$servername "Delete of temporary volume successful. ($attachvolid)."
+    logger -p info -t image-process "Delete of temporary volume successful. ($attachvolid)."
   else
-    logger -p info -t image-$servername "Delete of temporary volume failed. ($attachvolid)."
+    logger -p info -t image-process "Delete of temporary volume failed. ($attachvolid)."
   fi
 }
 
 consume() {
-    logger -p info -t image "Waiting for Image Conversion jobs."
+    logger -p info -t image-process "Waiting for Image Conversion jobs."
     while true; do        # move message to processing queue
         MSG=$($POPQUEUE)
         if [[ -z "$MSG" ]]; then
@@ -212,7 +212,7 @@ consume() {
         fi
         # remove message from message queue
         if [ "$MSG" != "nil" ]; then
-          logger -p info -t image-$MSG "Received image-conversion request for $MSG"
+          logger -p info -t image-process "Received image-conversion request for $MSG"
           process "$MSG"
         fi
         sleep 10;
