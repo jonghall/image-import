@@ -14,8 +14,8 @@
 # limitations under the License.
 
 # Set Variables
-set -e
-set -o pipefail
+#set -e
+#set -o pipefail
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
 instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 
@@ -55,12 +55,16 @@ process() {
 
   # create snapshot
   volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
-  if [ $? -eq 0 ]; then
+  if [ -z $volumeid ]; then
+    logger -p info -t image-$servername "Getting volumeid failed. Invalid Server or volume. Exiting."
+    return
+  else
     logger -p info -t image-$servername "Creating snapshot of $servername boot volume $volumeid."
     snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
-  else
-    logger -p info -t image-$servername "Getting volumeid failed."
-    return
+    if [ -z $snapshotid ]; then
+          logger -p info -t image-$servername "Snapshot failed. Exiting."
+          return
+    fi
   fi
 
   while true; do
@@ -201,8 +205,7 @@ process() {
 
 consume() {
     logger -p info -t image "Waiting for Image Conversion jobs."
-    while true; do
-        # move message to processing queue
+    while true; do        # move message to processing queue
         MSG=$($POPQUEUE)
         if [[ -z "$MSG" ]]; then
             break
