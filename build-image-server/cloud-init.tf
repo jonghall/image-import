@@ -5,7 +5,6 @@ data "template_file" "apikey_json" {
     }
 }
 
-
 data "template_file" "cloud-config" {
   template = file("${path.module}/cloud-init.tpl")
   vars = {

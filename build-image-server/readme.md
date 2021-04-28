@@ -11,8 +11,8 @@
     * Redis username/password
 2. IBM Cloud Object Storage service provisioned, with bucket created in destination region. Cross-region prefered if available for source/destination region.
     * HMAC Keys for COS Bucket with write access to import bucket
-    * COS Private Endpoint for bucket & bucket name
-    * COS URI for Image Import https://cloud.ibm.com/docs/vpc?topic=vpc-managing-images
+    * COS Private Endpoint to write to
+    * COS Bucket Name to be used
 3. IBM Cloud VPC authorized to access Cloud Object Storage Bucket. https://cloud.ibm.com/docs/vpc?topic=vpc-object-storage-prereq
 4. IBM Cloud API Key with access to create snapshot images, import VPC custom images, and manage REDIS database
 5. IBM Cloud API Key for Terraform to provision conversion server stored in env variable (export IC_API_KEY=)
@@ -37,8 +37,8 @@
     * Modify Server Name, and Server Count.  Count will determine how many servers will be provisioned to run conversions.
     * Modify instance profile and image to be used.   These should not need to be mofified.
     * Modify recovery region, snapshot region to match desired source and destination for snapshots
-    * Modify cosbucket to match bucket location in image import format. 
-    * Modify COS URI for which script will write converted images two.
+    * Modify cosbucket to write to and import images from. 
+    * Modify COS private URI for which script will write converted images two.
 4.  Issue `terraform init`
 5.  Issue `terraform plan`
 6.  Issue `terraform apply`
