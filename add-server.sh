@@ -1,7 +1,7 @@
 #!/bin/bash
 # get this servers instanceid from cloud-init
 
-REDIS_CLI="redli -u rediss://$REDISUSER:$REDISPW@$REDISURL --certfile=$REDIS_CACERT"
+REDIS_CLI="redli -u rediss://$REDISUSER:$REDISPW@$REDISURL --certfile=$REDIS_CERTFILE"
 q1="queue"
 
 push="${REDIS_CLI} RPUSH $q1 $1"
