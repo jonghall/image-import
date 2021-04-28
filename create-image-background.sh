@@ -55,8 +55,13 @@ process() {
 
   # create snapshot
   volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
-  logger -p info -t image-$servername "Creating snapshot of $servername boot volume $volumeid."
-  snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
+  if [ $? -eq 0 ]; then
+    logger -p info -t image-$servername "Creating snapshot of $servername boot volume $volumeid."
+    snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
+  else
+    logger -p info -t image-$servername "Getting volumeid failed."
+    return
+  fi
 
   while true; do
     sleep 60
