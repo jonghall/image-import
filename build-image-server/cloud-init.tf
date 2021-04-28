@@ -15,7 +15,6 @@ data "template_file" "cloud-config" {
     redisinstance = var.redisinstance
     redisuser = var.redisuser
     redispw = var.redispw
-    redisurl = var.redisurl
     cosendpoint = var.cosendpoint
     snapshot_region = var.snapshot_region
     recovery_region = var.recovery_region

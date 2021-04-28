@@ -94,7 +94,3 @@ variable "hmacsecret" {
 variable "redisinstance" {
   type = string
 }
-
-variable "redisurl" {
-  type = string
-}
