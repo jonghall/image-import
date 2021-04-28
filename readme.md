@@ -35,7 +35,7 @@
 ### Terraform
 Terraform v0.14.10 IBM Cloud Plugin >= 1.21.   
 Plans in each directory provide a sampe of how to build and recover servers from created images.  Variables should be configured as needed.
-- **build-image-server** Terraform plan to create conversion server(s). Change variables.tf to appropriate VPC, Subnet, and server names desired.   Currently you need to manually deploy S3 HMAC keys, IBM Cloud API key, and REDIS user/pw and certficate to each server after terraform provisions servers(s).
+- **build-image-server** Terraform plan to create conversion server(s). Change variables.tf to appropriate VPC, Subnet, and server names desired.   Creat terraform.tfvars.json to define private keys.
 - **tf_create**  Terraform plan to provision 8 test servers into existing production VPC.  
 - **tf_recover**  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
 
