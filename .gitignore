@@ -34,3 +34,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+/build-image-server/terraform.tfvars.json

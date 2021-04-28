@@ -43,4 +43,42 @@ variable "image" {
   description = "Image to be used for virtual instances"
 }
 
+variable "cosendpoint" {
+  default = "https://s3.direct.us-south.cloud-object-storage.appdomain.cloud"
+}
 
+variable "githubtoken" {
+  type = string
+  sensitive = true
+}
+
+variable "apikey" {
+  type = string
+  sensitive = true
+}
+variable "redisuser" {
+   type = string
+}
+
+variable "redispw" {
+  type = string
+  sensitive = true
+}
+
+variable "hmackey" {
+  type = string
+  sensitive = true
+}
+
+variable "hmacsecret" {
+  type = string
+  sensitive = true
+}
+
+variable "redisinstance" {
+  type = string
+}
+
+variable "redisurl" {
+  type = string
+}

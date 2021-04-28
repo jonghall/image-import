@@ -23,9 +23,7 @@ data "ibm_is_image" "image" {
   name =  var.image
 }
 
-data "local_file" "cloud-config" {
-  filename = "${path.module}/cloud-init.txt"
-}
+
 ####################################################
 # Create secondary Temp volume for conversion      #
 ####################################################
@@ -53,5 +51,5 @@ resource "ibm_is_instance" "server1" {
     subnet = data.ibm_is_subnet.subnet.id
   }
   keys = [data.ibm_is_ssh_key.sshkey.id]
-  user_data = data.local_file.cloud-config.content
+  user_data = data.template_cloudinit_config.cloud-init.rendered
 }
