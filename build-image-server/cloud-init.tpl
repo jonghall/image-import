@@ -5,7 +5,7 @@ package_upgrade: true
 
 runcmd:
  - sudo mv /var/lib/cloud/instance/scripts/apikey.json /root/.
- - sudo echo "${hmackey}:{$hmacsecret}" > /root/.passwd-s3fs
+ - sudo echo "${hmackey}:${hmacsecret}" > /root/.passwd-s3fs
  - sudo chmod 600 /root/.passwd-s3fs
  - sudo echo "export REDISUSER=${redisuser}" >> /etc/environment
  - sudo echo "export REDISPW=${redispw}" >> /etc/environment
@@ -37,9 +37,9 @@ runcmd:
  - ibmcloud plugin install cloud-databases -f
  - ibmcloud login --apikey @/root/apikey.json -r ${snapshot_region}
  - ibmcloud cdb deployment-cacert ${redisinstance} --endpoint-type private --save
- - sudo echo "export=REDIS_CERTFILE=$(ibmcloud cdb cxn ${redisinstance} --endpoint-type private --json | jq -r '.[].cli.environment.REDIS_CERTFILE')" >> /etc/environment
+ - sudo echo "export REDIS_CERTFILE=/root/$(ibmcloud cdb cxn ${redisinstance} --endpoint-type private --json | jq -r '.[].cli.environment.REDIS_CERTFILE')" >> /etc/environment
  - sudo export rediss=$(ibmcloud cdb cxn ${redisinstance} --endpoint-type private --json | jq '.[].rediss')
- - sudu echo "export REDISURL=$(echo $rediss | jq -r '.hosts[0].hostname'):$(echo $rediss | jq -r '.hosts[0].port')$( echo $rediss | jq -r '.path')" >> /etc/environment
+ - sudo echo "export REDISURL=$(echo $rediss | jq -r '.hosts[0].hostname'):$(echo $rediss | jq -r '.hosts[0].port')$( echo $rediss | jq -r '.path')" >> /etc/environment
  - wget https://github.com/IBM-Cloud/redli/releases/download/v0.5.2/redli_0.5.2_linux_amd64.tar.gz
  - tar zxvf redli_0.5.2_linux_amd64.tar.gz
  - sudo chmod +x redli
