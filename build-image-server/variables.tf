@@ -50,11 +50,11 @@ variable  "snapshot_region" {
 
 variable "recovery_region" {
   default = "us-south"
-  description = "Locaion of environment to recover snapshots."
+  description = "Location of environment to recover snapshots."
 }
 
-variable "cos_bucket" {
-  default = "cos://us-south/encrypted-images"
+variable "cosbucket" {
+  default = "encrypted-images"
   description = "COS Bucket to load images from."
 }
 

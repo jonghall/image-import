@@ -18,7 +18,7 @@ data "template_file" "cloud-config" {
     cosendpoint = var.cosendpoint
     snapshot_region = var.snapshot_region
     recovery_region = var.recovery_region
-    cos_bucket = var.cos_bucket
+    cosbucket = var.cosbucket
   }
 }
 
