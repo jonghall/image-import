@@ -1,0 +1,11 @@
+[Unit]
+Description=Image-Process Service
+
+[Service]
+ExecStart=/root/image-import/start-background-process.sh
+Type=forking
+TimeoutSec=30
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=350
+StartLimitBurst=10

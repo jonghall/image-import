@@ -5,6 +5,10 @@ data "template_file" "apikey_json" {
     }
 }
 
+data "local_file" "service" {
+  filename = file("${path.module}/image-process.service")
+}
+
 data "template_file" "cloud-config" {
   template = file("${path.module}/cloud-init.tpl")
   vars = {
@@ -35,6 +39,12 @@ data "template_cloudinit_config" "cloud-init" {
     filename      = "apikey.json"
     content_type  = "text/x-shellscript"
     content       = data.template_file.apikey_json.rendered
+  }
+
+  part {
+    filename      = "image-process.service"
+    content_type  = "text/x-shellscript"
+    content       = data.local_file.service.content
   }
 
 }
