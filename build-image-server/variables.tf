@@ -55,7 +55,7 @@ variable "recovery_region" {
 
 variable "cos_bucket" {
   default = "cos://us-south/encrypted-images"
-  description "COS Bucket to load images from."
+  description = "COS Bucket to load images from."
 }
 
 variable "cosendpoint" {
