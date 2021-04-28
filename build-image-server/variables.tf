@@ -43,8 +43,24 @@ variable "image" {
   description = "Image to be used for virtual instances"
 }
 
+variable  "snapshot_region" {
+  default = "au-syd"
+  description = "Location of environment to take snapshots."
+}
+
+variable "recovery_region" {
+  default = "us-south"
+  description = "Locaion of environment to recover snapshots."
+}
+
+variable "cos_import_bucket" {
+  default = "cos://us-south/encrypted-images"
+  description "COS Bucket to load images from."
+}
+
 variable "cosendpoint" {
   default = "https://s3.direct.us-south.cloud-object-storage.appdomain.cloud"
+  description = "URL for cos endpoint to save images to."
 }
 
 variable "githubtoken" {
