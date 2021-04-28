@@ -18,7 +18,7 @@
 5. IBM Cloud API Key for Terraform to provision conversion server stored in env variable (export IC_API_KEY=)
 6. IBM Github Enterprise personal access token to download repository scripts.    
 
-## Steps
+## Build Steps
 1. export IC_API_KEY with api key to be used by Terraform
 2. Create _terraform.tfvars.json_ filein Terraform directly to define private api keys and passwords to be used by Terraform.
 ````
@@ -42,3 +42,11 @@
 4.  Issue `terraform init`
 5.  Issue `terraform plan`
 6.  Issue `terraform apply`
+
+## Run Steps
+* Servers will autostart the image-process and automatically take work off of the REDIS work queue.    Each server will run 3 concurrent threads and are able to concurrently convert and import 3 images. 
+* Increasing the number of servers increases the concurrency of the conversion process.   
+* Servers may be deprovisioned after completion by decreasing the server_count variable and reapplying the Terraform template
+
+1.  To add server to work queue type `./add-server.sh servername`, servername should match the VPC defined name of the server.
+2.  All actions are logged via syslog.   Failures will result in the item being removed from the queue and will not be restarted.
