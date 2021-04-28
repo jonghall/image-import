@@ -32,13 +32,13 @@
   "redisinstance": "REDIS Database Instance name",
 }
 ````
-3.  Modify variable.tf with VPC, Subnet, Server Names, and other desired variables such as snapshot region, recovery region, etc.
-    * replace Region, VPC name, Zone, Subnet and resource group to match where you want conversion server deployed.  This does not need to be the same VPC or zone where snapshots will be taken.  It does need to be the same reigon.
+3.  Modify variable.tf with desired variables.
+    * replace Region, VPC name, Zone, Subnet and resource group name to match where you want conversion server(s) provisioned.  This does not need to be the same VPC or zone where snapshots will be taken.  It does need to be the same reigon.
     * Modify Server Name, and Server Count.  Count will determine how many servers will be provisioned to run conversions.
-    * Modify instance profile and image to be used.   These should not need to be mofified.
-    * Modify recovery region, snapshot region to match desired source and destination for snapshots
-    * Modify cosbucket to write to and import images from. 
-    * Modify COS private URI for which script will write converted images two.
+    * Modify instance profile and image to be used for conversin server.   These should not need to be modified. Script tested only with CentOS 7.
+    * Modify snapshot region and recovery region, to match desired source and destination for snapshots
+    * Modify cosbucket to the bucket images will be written to and imported from. 
+    * Modify COS private URI for which script will write converted images to.
 4.  Issue `terraform init`
 5.  Issue `terraform plan`
 6.  Issue `terraform apply`
