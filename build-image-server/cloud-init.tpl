@@ -33,7 +33,8 @@ runcmd:
  - ibmcloud plugin install infrastructure-service -f
  - ibmcloud plugin install cloud-databases -f
  - ibmcloud login --apikey @/root/apikey.json -r au-syd
- - ibmcloud cdb deployment-cacert ${redisinstance} --endpoint-type private --save --certroot  /root
+ - ibmcloud cdb deployment-cacert ${redisinstance} --endpoint-type private --save
+ - sudo echo "export=REDIS_CERTFILE=$(ibmcloud cdb cxn redis-image-conversion-sydney --endpoint-type private --json | jq -r '.[].cli.environment.REDIS_CERTFILE')" >> /root/.bashrc
  - wget https://github.com/IBM-Cloud/redli/releases/download/v0.5.2/redli_0.5.2_linux_amd64.tar.gz
  - tar zxvf redli_0.5.2_linux_amd64.tar.gz
  - sudo chmod +x redli
