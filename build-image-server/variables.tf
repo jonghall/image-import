@@ -23,7 +23,7 @@ variable "resourcegroup_name" {
   description = "Resource group for Server."
 }
 
-variable "server-name1" {
+variable "server-name" {
   default = "image-conversion-server"
   description = "Server Name to be used"
 }
