@@ -13,7 +13,7 @@ runcmd:
  - sudo echo "export REDISURL=${redisurl}" >> /root/.bashrc
  - sudo echo "export snapshot_region=${snapshot_region}" >> /root/.bashrc
  - sudo echo "export recovery_region=${recovery_region}" >> /root/.bashrc
- - sudo echo "export cos_import_bucket=${cos_bucket}" >> /root/.bashrc
+ - sudo echo "export cos_bucket=${cos_bucket}" >> /root/.bashrc
  - sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
  - sudo cp scripts
  - yum -y install epel-release
