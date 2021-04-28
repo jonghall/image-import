@@ -7,10 +7,10 @@ packages:
 
 runcmd:
  - sudo mv /var/lib/cloud/instance/scripts/apikey.json /root/.
- - sudo echo "${hmackey}:$hmacsecret" > /root/
+ - sudo echo "${hmackey}:$hmacsecret" > /root/.passwd-s3fs
  - sudo echo "export REDISUSERr=${redisuser}" >> /root/.bashrc
- - sudo echo "export REDISPW=${redispw}" >> /root/bashrc
- - sudo echo "export REDISURL=${redisurl}" >> /root/bashrc
+ - sudo echo "export REDISPW=${redispw}" >> /root/.bashrc
+ - sudo echo "export REDISURL=${redisurl}" >> /root/.bashrc
  - sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
  - sudo cp scripts
  - yum -y install epel-release
