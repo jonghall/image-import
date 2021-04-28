@@ -21,9 +21,6 @@ nil=$(echo -n -e '\r\n')
 
 process() {
   export servername=$1
-  export snapshot_region="au-syd"
-  export recovery_region="us-south"
-  export cos_import_bucket="cos://us-south/encrypted-images"
   TIMESTAMP=`date +%Y%m%d%H%M`
   snapshotname="$servername-$TIMESTAMP"
 
@@ -138,7 +135,7 @@ process() {
 
   # import snapshot as server-latest
   logger -p info -t image-$servername "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
-  ibmcloud is image-create $servername-latest --file $cos_import_bucket/$snapshotname.qcow2 -os-name $snapshotos -q
+  ibmcloud is image-create $servername-latest --file $cos_bucket/$snapshotname.qcow2 -os-name $snapshotos -q
   if [ $? -eq 0 ]; then
     logger -p info -t image-$servername "Image Import of Snapshot ($snapshotname) complete."
   else
