@@ -7,11 +7,11 @@ runcmd:
  - sudo mv /var/lib/cloud/instance/scripts/apikey.json /root/.
  - sudo echo "${hmackey}:{$hmacsecret}" > /root/.passwd-s3fs
  - sudo chmod 600 /root/.passwd-s3fs
- - sudo echo "export REDISUSER=${redisuser}" >> /root//etc/environment
- - sudo echo "export REDISPW=${redispw}" >> /root//etc/environment
- - sudo echo "export snapshot_region=${snapshot_region}" >> /root//etc/environment
- - sudo echo "export recovery_region=${recovery_region}" >> /root//etc/environment
- - sudo echo "export cos_bucket=${cosbucket}" >> /root//etc/environment
+ - sudo echo "export REDISUSER=${redisuser}" >> /etc/environment
+ - sudo echo "export REDISPW=${redispw}" >> /etc/environment
+ - sudo echo "export snapshot_region=${snapshot_region}" >> /etc/environment
+ - sudo echo "export recovery_region=${recovery_region}" >> /etc/environment
+ - sudo echo "export cos_bucket=${cosbucket}" >> /etc/environment
  - sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
  - sudo cp scripts
  - yum -y install epel-release
@@ -29,7 +29,7 @@ runcmd:
  - sudo mkdir /mnt/cos
  - sudo echo "/dev/mapper/vg_virt-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
  - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,url=${cosendpoint} 0 0" >> /etc/fstab
- - sudo echo "export cosbucket=cos://${recovery_region}/${cosbucket}" >> /root//etc/environment
+ - sudo echo "export cosbucket=cos://${recovery_region}/${cosbucket}" >> /etc/environment
  - sudo mount -a
  - cd /root
  - curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
@@ -37,9 +37,9 @@ runcmd:
  - ibmcloud plugin install cloud-databases -f
  - ibmcloud login --apikey @/root/apikey.json -r ${snapshot_region}
  - ibmcloud cdb deployment-cacert ${redisinstance} --endpoint-type private --save
- - sudo echo "export=REDIS_CERTFILE=$(ibmcloud cdb cxn ${redisinstance} --endpoint-type private --json | jq -r '.[].cli.environment.REDIS_CERTFILE')" >> /root//etc/environment
+ - sudo echo "export=REDIS_CERTFILE=$(ibmcloud cdb cxn ${redisinstance} --endpoint-type private --json | jq -r '.[].cli.environment.REDIS_CERTFILE')" >> /etc/environment
  - sudo export rediss=$(ibmcloud cdb cxn ${redisinstance} --endpoint-type private --json | jq '.[].rediss')
- - sudu echo "export REDISURL=$(echo $rediss | jq -r '.hosts[0].hostname'):$(echo $rediss | jq -r '.hosts[0].port')$( echo $rediss | jq -r '.path')" >> /root//etc/environment
+ - sudu echo "export REDISURL=$(echo $rediss | jq -r '.hosts[0].hostname'):$(echo $rediss | jq -r '.hosts[0].port')$( echo $rediss | jq -r '.path')" >> /etc/environment
  - wget https://github.com/IBM-Cloud/redli/releases/download/v0.5.2/redli_0.5.2_linux_amd64.tar.gz
  - tar zxvf redli_0.5.2_linux_amd64.tar.gz
  - sudo chmod +x redli
