@@ -17,6 +17,7 @@
 #set -e
 #set -o pipefail
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
+ibmcloud plugin list
 instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 
 logger -p info -t image "Starting Image Conversion work queue on instance $instanceid."
@@ -54,7 +55,6 @@ process() {
   fi
 
   # create snapshot
-  ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)'
   export volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
   logger -p info -t image-process "Creating snapshot of $servername boot volume $volumeid."
   export snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
@@ -108,7 +108,7 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Conversion of $dev to $snapshotname.qcow2 complete."
   else
-    logger -p info -t image-process "Conversion of $dev to $snapshotname.qcow2 failed."
+    logger -p error -t image-process "Conversion of $dev to $snapshotname.qcow2 failed."
     return
   fi
 
@@ -118,7 +118,7 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Change to region $recovery_region succesful."
   else
-    logger -p info -t image-process "Change to region $recovery_region failed."
+    logger -p error -t image-process "Change to region $recovery_region failed."
     return
   fi
 
@@ -141,7 +141,7 @@ process() {
     if [ $? -eq 0 ]; then
       logger -p info -t image-process "Image rename $servername-latest to $newname successfull."
     else
-      logger -p info -t image-process "Image rename $servername-latest to $newname failed."
+      logger -p error -t image-process "Image rename $servername-latest to $newname failed."
     fi
   fi
 
@@ -151,7 +151,7 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Image Import of Snapshot ($snapshotname) complete."
   else
-    logger -p info -t image-process "Image Import of Snapshot ($snapshotname) failed."
+    logger -p error -t image-process "Image Import of Snapshot ($snapshotname) failed."
   fi
 
   # Target region where snapshot is and import cos image into library.  VPC service must have access to instance of COS.
@@ -161,14 +161,14 @@ process() {
     logger -p info -t image-process "Change to region $snapshot_region successful."
 
   else
-    logger -p info -t image-process "Change to region $snapshot_region failed."
+    logger -p error -t image-process "Change to region $snapshot_region failed."
     return
   fi
 
   # Get volume id to delete as autodelete not working
   logger -p info -t image-process "Getting attached volume id ($instanceid $attachmentid)"
   export attachvolid=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json| jq -r '.volume.id')
-  logger -p info -t image-process "Attached volume id = $attachvolid."
+  logger -p debug -t image-process "Attached volume id = $attachvolid."
 
   #Detach volume and delete (volume set to autodelete on detach)
   logger -p info -t image-process "Detaching temporary volume from this server. (ibmcloud is instance-volume-attachment-detach $instanceid $attachmentid)"
@@ -176,7 +176,7 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Detach issued successfully."
   else
-    logger -p info -t image-process "Detach failed."
+    logger -p error -t image-process "Detach failed."
     return
   fi
 
@@ -195,7 +195,7 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Delete of temporary volume successful. ($attachvolid)."
   else
-    logger -p info -t image-process "Delete of temporary volume failed. ($attachvolid)."
+    logger -p error -t image-process "Delete of temporary volume failed. ($attachvolid)."
   fi
 }
 
