@@ -29,7 +29,7 @@ runcmd:
  - sudo mkdir /mnt/cos
  - sudo echo "/dev/mapper/vg_virt-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
  - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,url=${cosendpoint} 0 0" >> /etc/fstab
- - sudo echo "export cosbucket=cos://${recovery_region}/${cosbucket}" >> /root/.bash_profile
+ - sudo echo "export importurl=cos://${recovery_region}/${cosbucket}" >> /root/.bash_profile
  - sudo mount -a
  - cd /root
  - curl -fsSL https://clis.cloud.ibm.com/install/linux | sh

@@ -102,7 +102,7 @@ process() {
   logger -p info -t image-process "Block Device $dev ready to access for conversion."
 
   #convert block device to qcow2 file on COS
-  logger -p info -t image-process "Converting $dev to $snapshotname.qcow2."
+  logger -p info -t image-process "Conversion of $dev to $snapshotname.qcow2 started."
   qemu-img convert -c -f raw -O qcow2 $dev /mnt/cos/$snapshotname.qcow2
 
   if [ $? -eq 0 ]; then
@@ -116,7 +116,7 @@ process() {
   logger -p info -t image-process "Changing region to recovery region $recovery_region"
   ibmcloud target -r $recovery_region > /dev/null
   if [ $? -eq 0 ]; then
-    logger -p info -t image-process "Change to region $recovery_region succesful."
+    logger -p info -t image-process "Change to region $recovery_region successful."
   else
     logger -p error -t image-process "Change to region $recovery_region failed."
     return
@@ -146,8 +146,8 @@ process() {
   fi
 
   # import snapshot as server-latest
-  logger -p info -t image-process "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region."
-  ibmcloud is image-create $servername-latest --file $cos_bucket/$snapshotname.qcow2 -os-name $snapshotos -q
+  logger -p info -t image-process "Importing $snapshotname of os-type $snapshotos into Image Library in $recovery_region from $importurl."
+  ibmcloud is image-create $servername-latest --file $importurl/$snapshotname.qcow2 -os-name $snapshotos -q
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Image Import of Snapshot ($snapshotname) complete."
   else
