@@ -39,7 +39,7 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Login Complete."
   else
-    logger -p info -t image-process "Login failed."
+    logger -p error -t image-process "Login failed."
     return
   fi
 
@@ -49,16 +49,17 @@ process() {
   if [ $? -eq 0 ]; then
     logger -p info -t image-process "Change to region $snapshot_region successful."
   else
-    logger -p info -t image-process "Change to region $snapshot_region failed."
+    logger -p error -t image-process "Change to region $snapshot_region failed."
     return
   fi
 
   # create snapshot
+  ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)'
   export volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
   logger -p info -t image-process "Creating snapshot of $servername boot volume $volumeid."
   export snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
   if [ -z "${snapshotid}" ]; then
-        logger -p info -t image-process "Snapshot failed for $servername volumeid $volumeid. Exiting."
+        logger -p error -t image-process "Snapshot failed for $servername volumeid $volumeid. Exiting."
         return
   fi
 
