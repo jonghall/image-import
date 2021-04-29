@@ -29,7 +29,7 @@ data "ibm_is_image" "image" {
 ####################################################
 resource "ibm_is_volume" "volume" {
   name     = "tmp-volume"
-  profile  = "10iops"
+  profile  = "10iops-tier"
   zone     = var.zone1
   capacity = 250
   resource_group  = data.ibm_resource_group.rg.id
