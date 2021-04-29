@@ -55,9 +55,9 @@ process() {
   fi
 
   # create snapshot
-  export volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
+  volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
   logger -p info -t image-process "Creating snapshot of $servername boot volume $volumeid."
-  export snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
+  snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
   if [ -z "${snapshotid}" ]; then
         logger -p error -t image-process "Snapshot failed for $servername volumeid $volumeid. Exiting."
         return
@@ -65,7 +65,7 @@ process() {
 
   while true; do
     sleep 60
-    export snapshotstate=$(ibmcloud is snapshot $snapshotid --json |  jq -r '.lifecycle_state')
+    snapshotstate=$(ibmcloud is snapshot $snapshotid --json |  jq -r '.lifecycle_state')
     if [[ $snapshotstate == 'stable' ]]; then
               break
     fi
@@ -73,17 +73,17 @@ process() {
   logger -p info -t image-process "Snapshot of $servername boot volume $volumeid completed."
 
   # get running virtual servers instance id & operating system of instance
-  export instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
-  export snapshotos=$(ibmcloud is snapshot $snapshotid --json | jq -r ".operating_system.name")
+  instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
+  snapshotos=$(ibmcloud is snapshot $snapshotid --json | jq -r ".operating_system.name")
 
   # attach volume based on snapshot to local instance
   logger -p info -t image-process "Attaching snapshot $snapshotname to this instance. ($snapshotname $instanceid --source-snapshot $snapshotid)"
-  export attachmentid=$(ibmcloud is instance-volume-attachment-add $snapshotname $instanceid --source-snapshot $snapshotid --profile general-purpose --auto-delete true --output json | jq -r '.id')
+  attachmentid=$(ibmcloud is instance-volume-attachment-add $snapshotname $instanceid --source-snapshot $snapshotid --profile general-purpose --auto-delete true --output json | jq -r '.id')
 
   # Wait until attach is complete then get device
   while true; do
     sleep 30
-    export attachdevice=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json |  jq -r 'select(.status == "attached")' | jq -r '.device.id')
+    attachdevice=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json |  jq -r 'select(.status == "attached")' | jq -r '.device.id')
     if [ ! -z "$attachdevice" ]; then
               break
     fi
@@ -93,7 +93,7 @@ process() {
 
   # determine device from deviceid
   sleep 30
-  export dev=$(readlink -f /dev/disk/by-id/virtio-${attachdevice:0:20})
+  dev=$(readlink -f /dev/disk/by-id/virtio-${attachdevice:0:20})
   logger -p info -t image-process "Local Block Device for $snapshotname identified as $dev."
 
   while [ ! -e $dev ]; do
@@ -126,17 +126,17 @@ process() {
   # step 1 - rename latest image (if it exists to servername+imagecreate date)
   # step 2 - import new image into library as servername-latest
   # get json of current private images from cli
-  export imagejson=$(ibmcloud is images --json| jq -r '.[] | select(.visibility == "private")')
+  imagejson=$(ibmcloud is images --json| jq -r '.[] | select(.visibility == "private")')
   # Get the current Image id and created_at for new name $(date -d $created +%Y%m%d%H%M)
-  export imagename="$servername-latest"
-  export imageid=$(echo $imagejson | jq -r --arg imagename $imagename '. | select(.name == $imagename)' | jq -r '.id')
+  imagename="$servername-latest"
+  imageid=$(echo $imagejson | jq -r --arg imagename $imagename '. | select(.name == $imagename)' | jq -r '.id')
   if [ -z "$imageid" ]; then
     logger -p info -t image-process "First import of this servers snapshot."
   else
     # rename latest image to severname-created at
     logger -p info -t image-process "Image ($imageid) already exists named $imagename, renaming to image-created-date."
-    export createdat=$(echo $imagejson | jq -r --arg imagename $imagename '. | select(.name == $imagename)' | jq -r '.created_at')
-    export newname=$servername-$(date -d $createdat +%Y%m%d%H%M)
+    createdat=$(echo $imagejson | jq -r --arg imagename $imagename '. | select(.name == $imagename)' | jq -r '.created_at')
+    newname=$servername-$(date -d $createdat +%Y%m%d%H%M)
     ibmcloud is image-update $imageid --name $newname -q
     if [ $? -eq 0 ]; then
       logger -p info -t image-process "Image rename $servername-latest to $newname successfull."
@@ -167,7 +167,7 @@ process() {
 
   # Get volume id to delete as autodelete not working
   logger -p info -t image-process "Getting attached volume id ($instanceid $attachmentid)"
-  export attachvolid=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json| jq -r '.volume.id')
+  attachvolid=$(ibmcloud is instance-volume-attachment $instanceid $attachmentid --json| jq -r '.volume.id')
   logger -p debug -t image-process "Attached volume id = $attachvolid."
 
   #Detach volume and delete (volume set to autodelete on detach)
@@ -183,7 +183,7 @@ process() {
   # Wait for deteach to complete and Delete volume as auto-delete not working
   while true; do
     sleep 60
-    export attached=$(ibmcloud is volume $attachvolid --json | jq -r '.volume_attachments')
+    attached=$(ibmcloud is volume $attachvolid --json | jq -r '.volume_attachments')
     if [ "${#attached}" -eq 2 ]; then
               break
     fi
