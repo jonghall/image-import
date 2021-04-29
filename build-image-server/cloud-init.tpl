@@ -47,5 +47,6 @@ runcmd:
  - rm redli_0.5.2_linux_amd64.tar.gz -f
  - git clone https://${githubtoken}:x-oauth-basic@github.ibm.com/jonhall/image-import.git
  - sudo mv /var/lib/cloud/instance/scripts/image-process.service /etc/systemd/system/.
+ - sudo chmod 640 /etc/systemd/system/image-process.service
  - sudo systemctl start image-process
  - sudo systemctl enable image-process
