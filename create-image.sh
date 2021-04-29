@@ -20,7 +20,7 @@ export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
 
 instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 
-logger -p info -t image "Starting Image Conversion work queue on instance $instanceid."
+logger -p info -t image-process "Starting Image Conversion work queue on instance $instanceid."
 
 export REDIS_CLI="redli -u rediss://$REDISUSER:$REDISPW@$REDISURL --certfile=$REDIS_CERTFILE"
 q1="queue"
@@ -79,7 +79,7 @@ process() {
   # attach volume based on snapshot to local instance
   logger -p info -t image-process "Attaching snapshot $snapshotname to this instance. ($snapshotname $instanceid --source-snapshot $snapshotid)"
   attachmentid=$(ibmcloud is instance-volume-attachment-add $snapshotname $instanceid --source-snapshot $snapshotid --profile general-purpose --auto-delete true --output json | jq -r '.id')
-
+  logger -p debug -t image-process "$snapshotname $instanceid --source-snapshot $snapshotid (attachmentid=$attachmentid)"
   # Wait until attach is complete then get device
   while true; do
     sleep 30
