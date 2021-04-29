@@ -27,7 +27,7 @@ runcmd:
  - sudo lvcreate -l 100%FREE /dev/vg_virt /dev/vdd1 --name lv_tmp
  - sudo mkfs.xfs  /dev/vg_virt/lv_tmp
  - sudo mkdir /mnt/cos
- - sudo echo "/dev/mapper/vg_virt-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
+ - sudo echo "/dev/mapper/vg_virt-lv_tmp /tmp xfs nosuid,noexec,nodev,rw 0 0" >> /etc/fstab
  - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,url=${cosendpoint} 0 0" >> /etc/fstab
  - sudo echo "export importurl=cos://${recovery_region}/${cosbucket}" >> /root/.bash_profile
  - sudo mount -a

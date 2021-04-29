@@ -6,7 +6,7 @@ data "template_file" "apikey_json" {
 }
 
 data "local_file" "service" {
-  filename = file("${path.module}/image-process.service")
+  filename = "${path.module}/image-process.service"
 }
 
 data "template_file" "cloud-config" {
