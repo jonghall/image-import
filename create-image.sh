@@ -27,7 +27,7 @@ POPQUEUE="${REDIS_CLI} LPOP $q1"
 nil=$(echo -n -e '\r\n')
 
 process() {
-  export servername="$1"
+  export servername=$1
   TIMESTAMP=`date +%Y%m%d%H%M`
   snapshotname="$servername-$TIMESTAMP"
 
