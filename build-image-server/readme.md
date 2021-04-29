@@ -1,10 +1,5 @@
 # Build Image Server
 
-### Documentation
-- Documentation of Snapshot:  [https://cloud.ibm.com/docs/vpc?topic=vpc-snapshots-vpc-planning](https://cloud.ibm.com/docs/vpc?topic=vpc-snapshots-vpc-planning)  
-- Documentation of IBM Cloud CLI: [https://cloud.ibm.com/docs/cli?topic=cli-getting-started](https://cloud.ibm.com/docs/cli?topic=cli-getting-started).   
-
-
 ### Pre-reqs:
 1. IBM Databases for Redis provisioned and available in source region.  REDIS is used to maintain work queue between nodes and processes.  Minimum configuration acceptable.  https://cloud.ibm.com/catalog/services/databases-for-redis.
     * Redis Service name
