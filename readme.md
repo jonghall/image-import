@@ -20,9 +20,9 @@
 >     snapshots                                                   [Beta] List all snapshots  
 
 ### Image conversion process
-- **create-image.sh** runs in the background, using a REDIS queue, executes image-conversion jobs in the background.  Can be used to run multiple current conversion jobs, and to scale horizontally to multiple servers
-- **start-image-backg
-- **add-server.sh <server>** add server to REDIS queue to be converted by create-image-background.sh.
+- **create-image.sh** Using a REDIS queue, executes image-conversion jobs in the background.  Can be used to run multiple current conversion jobs, and to scale horizontally to multiple servers
+- **start-background-process.sh** starts multiple background create-image processes.  Started by systemd image-process service at boot.
+- **add-server.sh <server>** add a server to REDIS queue to be converted by create-image-background.sh.
 
 1. Initiate a snapshot of specified server boot volume
 2. Create volume from snapshot and attaches to image server
