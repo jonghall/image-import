@@ -29,7 +29,7 @@ variable "server-name" {
 }
 
 variable "server-count" {
-  default = "1"
+  default = "2"
   description = "Number of image conversion servers."
 }
 
