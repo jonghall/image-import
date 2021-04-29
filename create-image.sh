@@ -17,7 +17,7 @@
 #set -e
 #set -o pipefail
 export IBMCLOUD_IS_FEATURE_SNAPSHOT=true
-ibmcloud plugin list
+
 instanceid=$(basename $(readlink -f  /var/lib/cloud/instance))
 
 logger -p info -t image "Starting Image Conversion work queue on instance $instanceid."
