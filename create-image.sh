@@ -55,13 +55,13 @@ process() {
 
   # create snapshot
   volumeid=$(ibmcloud is instances --json | jq -r '.[] | select(.name == env.servername)' | jq -r '.boot_volume_attachment.volume.id')
-  if [ -z "$volumeid" ]; then
+  if [[ -z "$volumeid" ]]; then
     logger -p info -t image-process "Getting volumeid for $servername failed. Invalid Server or volume. Exiting."
     return
   else
     logger -p info -t image-process "Creating snapshot of $servername boot volume $volumeid."
     snapshotid=$(ibmcloud is snapshot-create --name $snapshotname --volume $volumeid --json |  jq -r '.id')
-    if [ -z "$snapshotid" ]; then
+    if [[ -z "$snapshotid" ]]; then
           logger -p info -t image-process "Snapshot failed for $servername volumeid $volumeid. Exiting."
           return
     fi
