@@ -29,9 +29,9 @@
 Terraform v0.14.10 IBM Cloud Plugin >= 1.21.   
 Plans in each directory provide a sample of how to build server, build test environment and recover servers from created images.  
 
-- **build-image-server** Terraform plan to create conversion server(s). 
-- **tf_create**  Terraform plan to provision 8 test servers into existing production VPC for testing.  
-- **tf_recover**  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
+- [**build-image-server**](https://github.ibm.com/jonhall/image-import/tree/master/build-image-server) Terraform plan to create conversion server(s). 
+- [**tf_create**](https://github.ibm.com/jonhall/image-import/tree/master/tf_create)  Terraform plan to provision 8 test servers into existing production VPC for testing.  
+- [**tf_recover**](https://github.ibm.com/jonhall/image-import/tree/master/tf_recover)  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
 
 ### Other useful utilities
 - **get-boot-vol.sh** returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
