@@ -13,9 +13,9 @@
 >     snapshots                                                   [Beta] List all snapshots  
 
 ### Image conversion process
-- [**create-image.sh**](https://github.ibm.com/jonhall/image-import/blob/master/create-image.sh) Using a REDIS queue, executes image-conversion jobs and then imports into customer image library in recovery region .  Can be used to run multiple current conversion jobs, and to scale horizontally to multiple servers
-- [**start-background-process.sh**](https://github.ibm.com/jonhall/image-import/blob/master/start-background-process.sh) starts multiple background create-image processes.  Started by systemd image-process service at boot.
-- [**add-server.sh <server>**](https://github.ibm.com/jonhall/image-import/blob/master/add-server.sh) add a server to REDIS queue to be converted by create-image-background.sh.
+- [**create-image.sh**](https://github.ibm.com/jonhall/image-import/blob/master/create-image.sh) Using a REDIS queue, executes image-conversion jobs and then imports converted image into the custom image library in recovery region .  Can be used to run multiple current conversion jobs, and scales horizontally to multiple servers.
+- [**start-background-process.sh**](https://github.ibm.com/jonhall/image-import/blob/master/start-background-process.sh) used by Systemd to start multiple background create-image processes.  Started by systemd image-process service at boot.
+- [**add-server.sh <server>**](https://github.ibm.com/jonhall/image-import/blob/master/add-server.sh) adds a server to REDIS queue to be converted by create-image process.
 
 1. Initiate a snapshot of specified servers boot volume
 2. Create volume from the snapshot and attache to image conversion server
@@ -34,8 +34,8 @@ Plans in each directory provide a sample of how to build server, build test envi
 - [**tf_recover**](https://github.ibm.com/jonhall/image-import/tree/master/tf_recover)  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
 
 ### Other useful utilities
-- **get-boot-vol.sh** returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
-- **snapshot.sh** creates a snapshot of boot volume to be used within-region.  
+- [**get-boot-vol.sh**](https://github.ibm.com/jonhall/image-import/blob/master/get-boot-vol.sh) returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
+- [**snapshot.sh**](https://github.ibm.com/jonhall/image-import/blob/master/snapshot.sh) creates a snapshot of boot volume to be used within-region.  
 
 
 ### known limitations
