@@ -29,12 +29,12 @@ variable "server-name" {
 }
 
 variable "server-count" {
-  default = "2"
+  default = "1"
   description = "Number of image conversion servers."
 }
 
 variable "instance_profile" {
-  default =  "bx2-2x8"
+  default =  "mx2-8x64"
   description = "Instance profile to be used for virtual instances"
 }
 
