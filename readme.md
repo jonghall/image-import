@@ -39,8 +39,8 @@ Plans in each directory provide a sample of how to build server, build test envi
 
 
 ### known limitations
-- even though temporary volume is created with auto-delete=true, volumes are not automatically deleted on detach.  Script currently manually deletes all volumes.
+- even though temporary volume is created with auto-delete=true, volumes are not automatically deleted on detach.  Script manually deletes volumes until issue is resolved.
 - script does not delete COS images
 - script does not delete old image library images
 - script does not prune/delete old snapshots
-- cos image names:  latest image for each server is always prepended with -latest, older images named with image-import date
+
