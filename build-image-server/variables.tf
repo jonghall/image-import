@@ -1,20 +1,20 @@
 variable "ibmcloud_region" {
   description = "IBM Cloud region to build infrastructure"
-  default = "au-syd"
+  default = "us-east"
 }
 
 variable "vpc_name" {
-  default = "au-syd-default-vpc"
+  default = "us-east-my-vpc"
   description = "VPC to provision servers into"
 }
 
 variable "zone1" {
-  default = "au-syd-1"
+  default = "us-east-2"
   description = "Define zone of region to deploy to"
 }
 
 variable "vpc_subnet" {
-  default = "au-syd-1-default-subnet"
+  default = "us-east-2-default-subnet"
   description = "Define subnet for network connection."
 }
 
@@ -39,12 +39,12 @@ variable "instance_profile" {
 }
 
 variable "image" {
-  default = "ibm-centos-7-9-minimal-amd64-2"
+  default = "ibm-centos-7-9-minimal-amd64-3"
   description = "Image to be used for virtual instances"
 }
 
 variable  "snapshot_region" {
-  default = "au-syd"
+  default = "us-east"
   description = "Location of environment to take snapshots."
 }
 
@@ -54,7 +54,7 @@ variable "recovery_region" {
 }
 
 variable "cosbucket" {
-  default = "encrypted-images"
+  default = "snapshots-us-south"
   description = "COS Bucket to load images from."
 }
 

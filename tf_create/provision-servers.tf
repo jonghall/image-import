@@ -41,11 +41,6 @@ resource "ibm_is_instance" "server1" {
   keys = [data.ibm_is_ssh_key.sshkey.id]
 }
 
-resource "ibm_is_floating_ip" "fip-server1" {
-  name = "fip-${var.server-name1}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server1.primary_network_interface[0].id
-}
 
 resource "ibm_is_instance" "server2" {
   name    = var.server-name2
@@ -60,12 +55,6 @@ resource "ibm_is_instance" "server2" {
     primary_ipv4_address = var.ip2
   }
   keys = [data.ibm_is_ssh_key.sshkey.id]
-}
-
-resource "ibm_is_floating_ip" "fip-server2" {
-  name = "fip-${var.server-name2}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server2.primary_network_interface[0].id
 }
 
 resource "ibm_is_instance" "server3" {
@@ -83,12 +72,6 @@ resource "ibm_is_instance" "server3" {
   keys = [data.ibm_is_ssh_key.sshkey.id]
 }
 
-resource "ibm_is_floating_ip" "fip-server3" {
-  name = "fip-${var.server-name3}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server3.primary_network_interface[0].id
-}
-
 resource "ibm_is_instance" "server4" {
   name    = var.server-name4
   vpc  = data.ibm_is_vpc.vpc.id
@@ -102,12 +85,6 @@ resource "ibm_is_instance" "server4" {
     primary_ipv4_address = var.ip4
   }
   keys = [data.ibm_is_ssh_key.sshkey.id]
-}
-
-resource "ibm_is_floating_ip" "fip-server4" {
-  name = "fip-${var.server-name4}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server4.primary_network_interface[0].id
 }
 
 resource "ibm_is_instance" "server5" {
@@ -125,12 +102,6 @@ resource "ibm_is_instance" "server5" {
   keys = [data.ibm_is_ssh_key.sshkey.id]
 }
 
-resource "ibm_is_floating_ip" "fip-server5" {
-  name = "fip-${var.server-name5}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server5.primary_network_interface[0].id
-}
-
 resource "ibm_is_instance" "server6" {
   name    = var.server-name6
   vpc  = data.ibm_is_vpc.vpc.id
@@ -144,12 +115,6 @@ resource "ibm_is_instance" "server6" {
     primary_ipv4_address = var.ip6
   }
   keys = [data.ibm_is_ssh_key.sshkey.id]
-}
-
-resource "ibm_is_floating_ip" "fip-server6" {
-  name = "fip-${var.server-name6}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server6.primary_network_interface[0].id
 }
 
 resource "ibm_is_instance" "server7" {
@@ -167,12 +132,6 @@ resource "ibm_is_instance" "server7" {
   keys = [data.ibm_is_ssh_key.sshkey.id]
 }
 
-resource "ibm_is_floating_ip" "fip-server7" {
-  name = "fip-${var.server-name7}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server7.primary_network_interface[0].id
-}
-
 resource "ibm_is_instance" "server8" {
   name    = var.server-name8
   vpc  = data.ibm_is_vpc.vpc.id
@@ -186,10 +145,4 @@ resource "ibm_is_instance" "server8" {
     primary_ipv4_address = var.ip8
   }
   keys = [data.ibm_is_ssh_key.sshkey.id]
-}
-
-resource "ibm_is_floating_ip" "fip-server8" {
-  name = "fip-${var.server-name8}"
-  resource_group = data.ibm_resource_group.rg.id
-  target = ibm_is_instance.server8.primary_network_interface[0].id
 }

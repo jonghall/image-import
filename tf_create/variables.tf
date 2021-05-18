@@ -1,20 +1,20 @@
 variable "ibmcloud_region" {
   description = "IBM Cloud region to build infrastructure"
-  default = "au-syd"
+  default = "us-east"
 }
 
 variable "vpc_name" {
-  default = "au-syd-default-vpc"
+  default = "snapshot-test"
   description = "VPC to provision servers into"
 }
 
 variable "zone1" {
-  default = "au-syd-1"
+  default = "us-east-2"
   description = "Define zone of region to deploy to"
 }
 
 variable "vpc_subnet" {
-  default = "au-syd-1-default-subnet"
+  default = "us-east-2-default-subnet"
   description = "Define subnet for network connection."
 }
 
@@ -29,7 +29,7 @@ variable "server-name1" {
 }
 
 variable "ip1" {
-  default = "10.245.0.101"
+  default = "10.241.64.101"
   description = "Subnet IP address to be assigned."
 }
 
@@ -39,7 +39,7 @@ variable "server-name2" {
 }
 
 variable "ip2" {
-  default = "10.245.0.102"
+  default = "10.241.64.102"
   description = "Subnet IP address to be assigned."
 }
 
@@ -49,7 +49,7 @@ variable "server-name3" {
 }
 
 variable "ip3" {
-  default = "10.245.0.103"
+  default = "10.241.64.103"
   description = "Subnet IP address to be assigned."
 }
 
@@ -59,7 +59,7 @@ variable "server-name4" {
 }
 
 variable "ip4" {
-  default = "10.245.0.104"
+  default = "10.241.64.104"
   description = "Subnet IP address to be assigned."
 }
 
@@ -69,7 +69,7 @@ variable "server-name5" {
 }
 
 variable "ip5" {
-  default = "10.245.0.105"
+  default = "10.241.64.105"
   description = "Subnet IP address to be assigned."
 }
 
@@ -79,7 +79,7 @@ variable "server-name6" {
 }
 
 variable "ip6" {
-  default = "10.245.0.106"
+  default = "10.241.64.106"
   description = "Subnet IP address to be assigned."
 }
 
@@ -89,7 +89,7 @@ variable "server-name7" {
 }
 
 variable "ip7" {
-  default = "10.245.0.107"
+  default = "10.241.64.107"
   description = "Subnet IP address to be assigned."
 }
 
@@ -99,7 +99,7 @@ variable "server-name8" {
 }
 
 variable "ip8" {
-  default = "10.245.0.108"
+  default = "10.241.64.108"
   description = "Subnet IP address to be assigned."
 }
 

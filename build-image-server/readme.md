@@ -4,9 +4,9 @@
 1. IBM Databases for Redis provisioned and available in source region.  REDIS is used to maintain work queue between nodes and processes.  Minimum configuration acceptable.  https://cloud.ibm.com/catalog/services/databases-for-redis.
     * Redis Service name
     * Redis username/password
-2. IBM Cloud Object Storage service provisioned, with bucket created in destination region. Cross-region prefered if available for source/destination region.
+2. IBM Cloud Object Storage service provisioned, with bucket created in destination region. NOte you must use  **regional COS bucket** in the destination region.  Cross regional can not be used with images.
     * HMAC Keys for COS Bucket with write access to import bucket
-    * COS Private Endpoint to write to
+    * COS Private Endpoint to write to in destination region
     * COS Bucket Name to be used
 3. IBM Cloud VPC authorized to access Cloud Object Storage Bucket. https://cloud.ibm.com/docs/vpc?topic=vpc-object-storage-prereq
 4. IBM Cloud API Key with access to create snapshot images, import VPC custom images, and manage REDIS database
