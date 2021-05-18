@@ -4,17 +4,17 @@ variable "ibmcloud_region" {
 }
 
 variable "vpc_name" {
-  default = "recovery-vpc"
+  default = "us-south-my-vpc"
   description = "Name of your VPC"
 }
 
 variable "zone1" {
-  default = "us-south-1"
+  default = "us-south-2"
   description = "Define zone of region to deploy to"
 }
 
 variable "vpc_subnet" {
-  default = "us-south-1-default-subnet"
+  default = "us-south-2-default-subnet"
   description = "Define subnet for network connection."
 }
 

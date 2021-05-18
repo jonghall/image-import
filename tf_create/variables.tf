@@ -4,7 +4,7 @@ variable "ibmcloud_region" {
 }
 
 variable "vpc_name" {
-  default = "snapshot-test"
+  default = "us-east-my-vpc"
   description = "VPC to provision servers into"
 }
 
