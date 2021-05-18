@@ -23,12 +23,12 @@ runcmd:
  - yum -y install wget
  - echo -e "n\np\n1\n\n\nt\n8e\n\nw\n" | sudo fdisk /dev/vdd
  - sudo pvcreate /dev/vdd1
- - sudo vgextend /dev/vg_virt /dev/vdd1
- - sudo lvcreate -l 100%FREE /dev/vg_virt /dev/vdd1 --name lv_tmp
- - sudo mkfs.xfs  /dev/vg_virt/lv_tmp
+ - sudo vgcreate vol_grp1 /dev/vdd1
+ - sudo lvcreate -l 100%FREE -n lv_tmp vol_grp1
+ - sudo mkfs.xfs  /dev/vol_grp1/lv_tmp
  - sudo mkdir /mnt/cos
- - sudo echo "/dev/mapper/vg_virt-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
- - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,url=${cosendpoint} 0 0" >> /etc/fstab
+ - sudo echo "/dev/mapper/vol_grp1-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
+ - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,,use_cache=/tmp,url=${cosendpoint} 0 0" >> /etc/fstab
  - sudo echo "export importurl=cos://${recovery_region}/${cosbucket}" >> /root/.bash_profile
  - sudo mount -a
  - cd /root
