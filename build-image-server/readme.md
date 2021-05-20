@@ -30,7 +30,7 @@
 3.  Modify variable.tf with desired variables.
     * replace Region, VPC name, Zone, Subnet and resource group name to match where you want conversion server(s) provisioned.  This does not need to be the same VPC or zone where snapshots will be taken.  It does need to be the same region.
     * Modify Server Name, and Server Count.  Count will determine how many servers will be provisioned to run conversions.  Increase _server-count_ to change the number of concurrent processes (each server executes 2 concurrent conversions).   
-    * Modify instance profile and image to be used for conversion server.  MX2 instance profiles are recommended as conversion process is memory intensive.  mx2-4x16 is adequate for two concurrent processes.  Multiple virtual servers are recommended to increase concurrency beyond 2 versus increasing instance profile size.  Script tested with CentOS 7.
+    * Modify instance profile and image to be used for conversion server.  MX2 instance profiles are recommended as conversion process is memory intensive.  mx2-2x16 is adequate for two concurrent processes.  Multiple virtual servers are recommended to increase concurrency beyond 2 versus increasing instance profile size.  Script tested with CentOS 7.
     * Modify snapshot region and recovery region, to match desired source and destination for snapshots to be taken and copied to.
     * Modify cosbucket to the bucket where images will be written to and imported from in recovery region. 
     * Modify COS private URL for which script will write converted images to.
