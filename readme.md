@@ -1,6 +1,7 @@
 # Using Snapshot Beta to create Cross Region Images
 
 ### Documentation
+*IBM Cloud Snapshots Now GA (5/20/21)*
 - Documentation of Snapshot:  [https://cloud.ibm.com/docs/vpc?topic=vpc-snapshots-vpc-planning](https://cloud.ibm.com/docs/vpc?topic=vpc-snapshots-vpc-planning)  
 - Documentation of IBM Cloud CLI: [https://cloud.ibm.com/docs/cli?topic=cli-getting-started](https://cloud.ibm.com/docs/cli?topic=cli-getting-started).   
 
@@ -37,9 +38,7 @@ Plans in each directory provide a sample of how to build server, build test envi
 - [**get-boot-vol.sh**](https://github.ibm.com/jonhall/image-import/blob/master/get-boot-vol.sh) returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
 - [**snapshot.sh**](https://github.ibm.com/jonhall/image-import/blob/master/snapshot.sh) creates a snapshot of boot volume to be used within-region.  
 
-
 ### known limitations
-- even though temporary volume is created with auto-delete=true, volumes are not automatically deleted on detach.  Script manually deletes volumes until issue is resolved.
 - script does not delete COS images
 - script does not delete old image library images
 - script does not prune/delete old snapshots

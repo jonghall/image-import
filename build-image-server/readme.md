@@ -28,9 +28,9 @@
 }
 ````
 3.  Modify variable.tf with desired variables.
-    * replace Region, VPC name, Zone, Subnet and resource group name to match where you want conversion server(s) provisioned.  This does not need to be the same VPC or zone where snapshots will be taken.  It does need to be the same reigon.
-    * Modify Server Name, and Server Count.  Count will determine how many servers will be provisioned to run conversions.
-    * Modify instance profile and image to be used for conversion server.   These should not need to be modified. Script tested with CentOS 7.
+    * replace Region, VPC name, Zone, Subnet and resource group name to match where you want conversion server(s) provisioned.  This does not need to be the same VPC or zone where snapshots will be taken.  It does need to be the same region.
+    * Modify Server Name, and Server Count.  Count will determine how many servers will be provisioned to run conversions.  Increase _server-count_ to change the number of concurrent processes (each server executes 2 concurrent conversions).   
+    * Modify instance profile and image to be used for conversion server.  MX2 instance profiles are recommended as conversion process is memory intensive.  mx2-4x16 is adequate for two concurrent processes.  Multiple virtual servers are recommended to increase concurrency beyond 2 versus increasing instance profile size.  Script tested with CentOS 7.
     * Modify snapshot region and recovery region, to match desired source and destination for snapshots to be taken and copied to.
     * Modify cosbucket to the bucket where images will be written to and imported from in recovery region. 
     * Modify COS private URL for which script will write converted images to.
@@ -39,9 +39,9 @@
 6.  Issue `terraform apply`
 
 ## Run Steps
-* systemd process will start 3 image-processes automatically at boot on each server.   Each will take work off of the REDIS work queue and process snapshot and image conversion requests.
+* systemd process will start 2 image-processes automatically at boot on each server.   Each will take work off of the REDIS work queue and process snapshot and image conversion requests.
 * Increasing the number of servers increases the concurrency of the conversion process.   
 * Servers may be deprovisioned after completion by decreasing the server_count in variable.tf and reapplying the Terraform plan.
 
-1.  To add a server to the conversion process queue run `./add-server.sh servername`, servername should match the VPC defined name of the server exactly.
+1.  To add a snapshot to the conversion process queue run `./add-server.sh servername`, servername should match the VPC defined name of the server exactly.
 2.  All actions are logged via syslog.   Failures will result in the item being removed from the queue and will not be restarted.
