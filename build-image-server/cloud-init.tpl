@@ -28,7 +28,7 @@ runcmd:
  - sudo mkfs.xfs  /dev/vol_grp1/lv_tmp
  - sudo mkdir /mnt/cos
  - sudo echo "/dev/mapper/vol_grp1-lv_tmp /tmp xfs defaults 0 0" >> /etc/fstab
- - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,,use_cache=/tmp,url=${cosendpoint} 0 0" >> /etc/fstab
+ - sudo echo "${cosbucket} /mnt/cos fuse.s3fs _netdev,allow_other,url=${cosendpoint} 0 0" >> /etc/fstab
  - sudo echo "export importurl=cos://${recovery_region}/${cosbucket}" >> /root/.bash_profile
  - sudo mount -a
  - cd /root
