@@ -16,4 +16,3 @@
 source ~/.bash_profile
 /root/image-import/create-image.sh >> /var/log/image-process.log 2>&1 &
 /root/image-import/create-image.sh >> /var/log/image-process.log 2>&1 &
-/root/image-import/create-image.sh >> /var/log/image-process.log 2>&1 &
