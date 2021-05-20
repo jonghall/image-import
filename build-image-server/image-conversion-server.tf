@@ -28,10 +28,11 @@ data "ibm_is_image" "image" {
 # Create secondary Temp volume for conversion      #
 ####################################################
 resource "ibm_is_volume" "volume" {
-  name     = "tmp-volume"
-  profile  = "10iops-tier"
+  count = var.server-count
+  name     = "tmp-${format("%02s",count.index+1)}"
+  profile  = "general-purpose"
   zone     = var.zone1
-  capacity = 1000
+  capacity = 100
   resource_group  = data.ibm_resource_group.rg.id
 }
 
@@ -46,7 +47,7 @@ resource "ibm_is_instance" "server1" {
   resource_group  = data.ibm_resource_group.rg.id
   image   = data.ibm_is_image.image.id
   profile = var.instance_profile
-  volumes = [ibm_is_volume.volume.id]
+  volumes = [element(ibm_is_volume.volume.*.id, count.index+1)]
   primary_network_interface {
     subnet = data.ibm_is_subnet.subnet.id
   }

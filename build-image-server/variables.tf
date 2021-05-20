@@ -34,7 +34,7 @@ variable "server-count" {
 }
 
 variable "instance_profile" {
-  default =  "mx2-8x64"
+  default =  "mx2-2x16"
   description = "Instance profile to be used for virtual instances"
 }
 
