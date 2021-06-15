@@ -1,4 +1,4 @@
-# Using Snapshot Beta to create Cross Region Images
+# Using Snapshot command to create Cross Region Images
 
 ### Documentation
 *IBM Cloud Snapshots Now GA (5/20/21)*
