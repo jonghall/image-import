@@ -6,12 +6,16 @@
 - Documentation of IBM Cloud CLI: [https://cloud.ibm.com/docs/cli?topic=cli-getting-started](https://cloud.ibm.com/docs/cli?topic=cli-getting-started).   
 
 ### CLI Commands used
->     snapshot                                                    [Beta] View details of a snapshot  
->     snapshot-create, snapshotc                                  [Beta] Create a snapshot from a volume  
->     snapshot-delete, snapshotd                                  [Beta] Delete snapshots  
->     snapshot-delete-from-source, snapshotsd, snapshots-delete   [Beta] Delete snapshots by source volume  
->     snapshot-update, snapshotu                                  [Beta] Update a snapshot  
->     snapshots                                                   [Beta] List all snapshots  
+>     snapshot                                                    View details of a snapshot  
+>     snapshot-create, snapshotc                                  Create a snapshot from a volume  
+>     snapshot-delete, snapshotd                                  Delete snapshots  
+>     snapshot-delete-from-source, snapshotsd, snapshots-delete   Delete snapshots by source volume  
+>     snapshot-update, snapshotu                                  Update a snapshot  
+>     snapshots                                                   List all snapshots  
+
+### Example Scripts ###
+- [**snapshot.sh**](https://github.ibm.com/jonhall/image-import/blob/master/snapshot.sh) is an example shell script which uses IBMCLOUD CLI to create a boot-volume snapshot from a running server.
+- [**provision.sh**](https://github.ibm.com/jonhall/image-import/blob/master/provision.sh) is an example shell script which uses IBMCLOUD CLI to provision a new server from a previously created Snapshot.
 
 ### Image conversion process
 - [**create-image.sh**](https://github.ibm.com/jonhall/image-import/blob/master/create-image.sh) Using a REDIS queue, executes image-conversion jobs and then imports converted image into the custom image library in recovery region .  Can be used to run multiple current conversion jobs, and scales horizontally to multiple servers.
