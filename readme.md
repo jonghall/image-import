@@ -18,7 +18,7 @@
 - [**provision.sh**](https://github.ibm.com/jonhall/image-import/blob/master/provision.sh) is an example shell script which uses IBMCLOUD CLI to provision a new server from a previously created Snapshot.
 - [**get-boot-vol.sh**](https://github.ibm.com/jonhall/image-import/blob/master/get-boot-vol.sh) returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
 
-### Image conversion process
+### Cross REgion Image conversion process
 - [**create-image.sh**](https://github.ibm.com/jonhall/image-import/blob/master/create-image.sh) Using a REDIS queue, executes image-conversion jobs and then imports converted image into the custom image library in recovery region .  Can be used to run multiple current conversion jobs, and scales horizontally to multiple servers.
 - [**start-background-process.sh**](https://github.ibm.com/jonhall/image-import/blob/master/start-background-process.sh) used by Systemd to start multiple background create-image processes.  Started by systemd image-process service at boot.
 - [**add-server.sh <server>**](https://github.ibm.com/jonhall/image-import/blob/master/add-server.sh) adds a server to REDIS queue to be converted by create-image process.
