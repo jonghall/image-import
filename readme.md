@@ -16,6 +16,7 @@
 ### Example Scripts ###
 - [**snapshot.sh**](https://github.ibm.com/jonhall/image-import/blob/master/snapshot.sh) is an example shell script which uses IBMCLOUD CLI to create a boot-volume snapshot from a running server.
 - [**provision.sh**](https://github.ibm.com/jonhall/image-import/blob/master/provision.sh) is an example shell script which uses IBMCLOUD CLI to provision a new server from a previously created Snapshot.
+- [**get-boot-vol.sh**](https://github.ibm.com/jonhall/image-import/blob/master/get-boot-vol.sh) returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
 
 ### Image conversion process
 - [**create-image.sh**](https://github.ibm.com/jonhall/image-import/blob/master/create-image.sh) Using a REDIS queue, executes image-conversion jobs and then imports converted image into the custom image library in recovery region .  Can be used to run multiple current conversion jobs, and scales horizontally to multiple servers.
@@ -38,9 +39,6 @@ Plans in each directory provide a sample of how to build server, build test envi
 - [**tf_create**](https://github.ibm.com/jonhall/image-import/tree/master/tf_create)  Terraform plan to provision 8 test servers into existing production VPC for testing.  
 - [**tf_recover**](https://github.ibm.com/jonhall/image-import/tree/master/tf_recover)  Terraform plan, after creating images and importing into alternate region, creates a VPC, Zone, and Subnet based on original VPC and provisions the 8 servers from each server-latest image.
 
-### Other useful utilities
-- [**get-boot-vol.sh**](https://github.ibm.com/jonhall/image-import/blob/master/get-boot-vol.sh) returns the associated instance-id, boot-volume-id, latest snapshot-id, and the original OS version of boot volume image.  
-- [**snapshot.sh**](https://github.ibm.com/jonhall/image-import/blob/master/snapshot.sh) creates a snapshot of boot volume to be used within-region.  
 
 ### known limitations
 - script does not delete COS images
